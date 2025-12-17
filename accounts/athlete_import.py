@@ -5,13 +5,11 @@ Excelファイルから選手を一括登録
 import io
 import re
 from datetime import date
-from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
-from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from .models import Athlete, Organization, User
+from .models import Athlete, User
 
 
 class AthleteImportError(Exception):
@@ -89,9 +87,9 @@ class AthleteExcelImporter:
         """
         self.user = user
         self.organization = user.organization
-        self.errors: List[Dict] = []
-        self.warnings: List[Dict] = []
-        self.parsed_athletes: List[Dict] = []
+        self.errors: list[dict] = []
+        self.warnings: list[dict] = []
+        self.parsed_athletes: list[dict] = []
     
     def validate_kana(self, text: str, field_name: str) -> str:
         """カタカナ検証"""
@@ -195,7 +193,7 @@ class AthleteExcelImporter:
         
         return nationality
     
-    def parse_row(self, row_data: Dict, row_num: int) -> Dict:
+    def parse_row(self, row_data: dict, row_num: int) -> dict:
         """
         1行のデータを解析
         
@@ -292,7 +290,7 @@ class AthleteExcelImporter:
         
         return athlete_data
     
-    def check_duplicates(self, parsed_athletes: List[Dict]) -> List[Dict]:
+    def check_duplicates(self, parsed_athletes: list[dict]) -> list[dict]:
         """
         重複チェック
         - JAAF IDの重複（ファイル内、既存DB）
@@ -335,7 +333,7 @@ class AthleteExcelImporter:
         
         return parsed_athletes
     
-    def parse_excel(self, file_content: bytes) -> Tuple[List[Dict], List[str]]:
+    def parse_excel(self, file_content: bytes) -> tuple[list[dict], list[str]]:
         """
         Excelファイルを解析
         
@@ -378,7 +376,7 @@ class AthleteExcelImporter:
         return parsed_athletes, global_errors
     
     @transaction.atomic
-    def import_athletes(self, parsed_athletes: List[Dict], skip_existing: bool = True) -> Tuple[List[Athlete], List[Dict]]:
+    def import_athletes(self, parsed_athletes: list[dict], skip_existing: bool = True) -> tuple[list[Athlete], list[dict]]:
         """
         選手を一括登録
         

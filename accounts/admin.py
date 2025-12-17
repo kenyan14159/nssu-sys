@@ -3,13 +3,13 @@
 初心者でも使いやすい管理画面を提供
 """
 import csv
+
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.http import HttpResponse
 from django.utils.html import format_html
 
 from .models import Athlete, Organization, User
-
 
 # =============================================================================
 # 管理アクション
