@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}エントリー - {{ race.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'competitions:list' %}">大会一覧</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name }}</a></li>
+            <li class="breadcrumb-item active">{{ race.name }} エントリー</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-plus-circle"></i> {{ race.name }} エントリー</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="id_athlete" class="form-label">選手 <span class="text-danger">*</span></label>
+                        {{ form.athlete }}
+                        {% if form.athlete.errors %}
+                            <div class="text-danger small">{{ form.athlete.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            <a href="{% url 'accounts:athlete_create' %}">+ 新しい選手を登録</a>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_declared_time_str" class="form-label">申告タイム <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary time-btn" data-action="decrease" data-target="declared_time_str">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="text" name="declared_time_str" id="id_declared_time_str" 
+                                       class="form-control text-center" placeholder="例: 14:30.00" 
+                                       pattern="\d{1,2}:\d{2}\.\d{2}"
+                                       value="{{ form.declared_time_str.value|default:'' }}">
+                                <button type="button" class="btn btn-outline-secondary time-btn" data-action="increase" data-target="declared_time_str">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            {% if form.declared_time_str.errors %}
+                                <div class="text-danger small">{{ form.declared_time_str.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">分:秒.00 の形式で入力</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_personal_best_str" class="form-label">自己ベスト <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary time-btn" data-action="decrease" data-target="personal_best_str">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="text" name="personal_best_str" id="id_personal_best_str" 
+                                       class="form-control text-center" placeholder="例: 14:00.00"
+                                       value="{{ form.personal_best_str.value|default:'' }}">
+                                <button type="button" class="btn btn-outline-secondary time-btn" data-action="increase" data-target="personal_best_str">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            {% if form.personal_best_str.errors %}
+                                <div class="text-danger small">{{ form.personal_best_str.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">分:秒.00 の形式で入力</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_note" class="form-label">備考</label>
+                        {{ form.note }}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus"></i> エントリーを追加
+                        </button>
+                        <button type="submit" name="continue" value="1" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> 追加して続ける
+                        </button>
+                        <a href="{% url 'competitions:detail' competition.pk %}" class="btn btn-outline-secondary">キャンセル</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">種目情報</div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th>大会</th>
+                        <td>{{ competition.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>種目</th>
+                        <td>{{ race.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>参加費</th>
+                        <td>{{ competition.entry_fee|default:2000 }}円</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const DEFAULT_TIME = '14:30.00';
+    let intervalId = null;
+    let timeoutId = null;
+    
+    // 時間文字列を秒に変換
+    function timeToSeconds(timeStr) {
+        if (!timeStr) return null;
+        const match = timeStr.match(/(\d{1,2}):(\d{2})\.(\d{2})/);
+        if (!match) return null;
+        return parseInt(match[1]) * 60 + parseInt(match[2]) + parseInt(match[3]) / 100;
+    }
+    
+    // 秒を時間文字列に変換
+    function secondsToTime(seconds) {
+        if (seconds < 0) seconds = 0;
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        const hundredths = Math.round((seconds % 1) * 100);
+        return `${mins}:${secs.toString().padStart(2, '0')}.${hundredths.toString().padStart(2, '0')}`;
+    }
+    
+    // 時間を変更する関数
+    function adjustTime(input, action) {
+        let currentSeconds = timeToSeconds(input.value);
+        
+        // 値が空の場合はデフォルト値を設定
+        if (currentSeconds === null) {
+            input.value = DEFAULT_TIME;
+            return;
+        }
+        
+        // 1秒ずつ増減
+        if (action === 'increase') {
+            currentSeconds += 1;
+        } else {
+            currentSeconds -= 1;
+        }
+        
+        input.value = secondsToTime(currentSeconds);
+    }
+    
+    // 長押しを停止
+    function stopHold() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+    }
+    
+    // ボタンクリック・長押しイベント
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        const action = btn.dataset.action;
+        const targetId = 'id_' + btn.dataset.target;
+        const input = document.getElementById(targetId);
+        
+        // クリック
+        btn.addEventListener('click', function() {
+            adjustTime(input, action);
+        });
+        
+        // 長押し開始（マウス）
+        btn.addEventListener('mousedown', function() {
+            timeoutId = setTimeout(() => {
+                intervalId = setInterval(() => {
+                    adjustTime(input, action);
+                }, 100);
+            }, 400);
+        });
+        
+        // 長押し開始（タッチ）
+        btn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            adjustTime(input, action);
+            timeoutId = setTimeout(() => {
+                intervalId = setInterval(() => {
+                    adjustTime(input, action);
+                }, 100);
+            }, 400);
+        });
+        
+        // 長押し終了
+        btn.addEventListener('mouseup', stopHold);
+        btn.addEventListener('mouseleave', stopHold);
+        btn.addEventListener('touchend', stopHold);
+        btn.addEventListener('touchcancel', stopHold);
+    });
+});
+</script>
+{% endblock %}

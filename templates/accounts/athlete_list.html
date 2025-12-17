@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}選手一覧{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-people"></i> 選手管理</h1>
+    <div class="btn-group">
+        <a href="{% url 'accounts:athlete_bulk_upload' %}" class="btn btn-outline-primary">
+            <i class="bi bi-upload"></i> 一括登録
+        </a>
+        <a href="{% url 'accounts:athlete_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> 選手を追加
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if athletes %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>氏名</th>
+                        <th>フリガナ</th>
+                        <th>性別</th>
+                        <th>生年月日</th>
+                        <th>陸連登録番号</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for athlete in athletes %}
+                    <tr>
+                        <td>{{ athlete.full_name }}</td>
+                        <td>{{ athlete.full_name_kana }}</td>
+                        <td>{{ athlete.get_gender_display }}</td>
+                        <td>{{ athlete.birth_date|date:"Y/m/d" }}</td>
+                        <td>{{ athlete.jaaf_id|default:"-" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'accounts:athlete_edit' athlete.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'accounts:athlete_delete' athlete.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-people display-1 text-muted"></i>
+            <p class="mt-3 text-muted">選手が登録されていません</p>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'accounts:athlete_bulk_upload' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-upload"></i> Excelで一括登録
+                </a>
+                <a href="{% url 'accounts:athlete_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> 1人ずつ登録
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

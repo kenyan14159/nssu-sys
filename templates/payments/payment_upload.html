@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}振込明細アップロード{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-upload"></i> 振込明細アップロード</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-camera"></i> 振込明細をアップロード
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="id_receipt_image" class="form-label">振込明細画像 <span class="text-danger">*</span></label>
+                        {{ form.receipt_image }}
+                        {% if form.receipt_image.errors %}
+                            <div class="text-danger small">{{ form.receipt_image.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            振込完了後の明細書またはネットバンキングのスクリーンショットをアップロードしてください（最大5MB）
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_payment_date" class="form-label">振込日</label>
+                            {{ form.payment_date }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_payment_amount" class="form-label">振込金額</label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary amount-btn" data-action="decrease">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                {{ form.payment_amount }}
+                                <button type="button" class="btn btn-outline-secondary amount-btn" data-action="increase">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">2,000円単位で調整</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_payer_name" class="form-label">振込名義</label>
+                            {{ form.payer_name }}
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-cloud-upload"></i> アップロードする
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- 振込先情報 -->
+        {% if bank_account %}
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-bank"></i> 振込先口座
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th>銀行名</th>
+                        <td>{{ bank_account.bank_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>支店名</th>
+                        <td>{{ bank_account.branch_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>口座種別</th>
+                        <td>{{ bank_account.get_account_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>口座番号</th>
+                        <td>{{ bank_account.account_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>口座名義</th>
+                        <td>{{ bank_account.account_holder }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- お支払い金額 -->
+        <div class="card border-warning">
+            <div class="card-header bg-warning bg-opacity-25">
+                <i class="bi bi-cash-coin"></i> お支払い金額
+            </div>
+            <div class="card-body">
+                <div class="bg-light rounded-3 p-3 text-center">
+                    <div class="text-muted small mb-1">振込金額</div>
+                    <div class="display-5 fw-bold text-primary mb-2">¥{{ entry_group.total_amount|intcomma }}</div>
+                </div>
+                <table class="table table-borderless table-sm mb-0 mt-3">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted">エントリー数</td>
+                            <td class="text-end fw-semibold">{{ entry_group.entries.count }}件</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">単価</td>
+                            <td class="text-end">¥2,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentAmountInput = document.getElementById('id_payment_amount');
+    const UNIT = 2000;
+    let intervalId = null;
+    let timeoutId = null;
+    
+    if (paymentAmountInput) {
+        // 初期値として合計金額を設定（まだ値がない場合）
+        if (!paymentAmountInput.value) {
+            paymentAmountInput.value = '{{ entry_group.total_amount|default:0 }}';
+        }
+        
+        // 金額を調整する関数
+        function adjustAmount(action) {
+            let currentAmount = parseInt(paymentAmountInput.value) || 0;
+            
+            // 値が空の場合は2000円スタート
+            if (currentAmount === 0) {
+                paymentAmountInput.value = UNIT;
+                return;
+            }
+            
+            if (action === 'increase') {
+                currentAmount += UNIT;
+            } else {
+                currentAmount -= UNIT;
+                if (currentAmount < UNIT) currentAmount = UNIT;
+            }
+            
+            paymentAmountInput.value = currentAmount;
+        }
+        
+        // 長押しを停止
+        function stopHold() {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }
+        
+        // ボタンイベント
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            const action = btn.dataset.action;
+            
+            // クリック
+            btn.addEventListener('click', function() {
+                adjustAmount(action);
+            });
+            
+            // 長押し開始（マウス）
+            btn.addEventListener('mousedown', function() {
+                timeoutId = setTimeout(() => {
+                    intervalId = setInterval(() => {
+                        adjustAmount(action);
+                    }, 150);
+                }, 400);
+            });
+            
+            // 長押し開始（タッチ）
+            btn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                adjustAmount(action);
+                timeoutId = setTimeout(() => {
+                    intervalId = setInterval(() => {
+                        adjustAmount(action);
+                    }, 150);
+                }, 400);
+            });
+            
+            // 長押し終了
+            btn.addEventListener('mouseup', stopHold);
+            btn.addEventListener('mouseleave', stopHold);
+            btn.addEventListener('touchend', stopHold);
+            btn.addEventListener('touchcancel', stopHold);
+        });
+    }
+});
+</script>
+{% endblock %}

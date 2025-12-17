@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}選手一括登録{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-upload"></i> 選手一括登録</h1>
+    <a href="{% url 'accounts:athlete_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> 選手一覧に戻る
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-excel"></i> Excelファイルをアップロード</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="file" class="form-label">Excelファイル <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx,.xls" required>
+                        <div class="form-text">
+                            .xlsx または .xls ファイル（5MB以下）
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-upload"></i> アップロードしてプレビュー
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> 入力フォーマット</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>列名</th>
+                                <th>必須</th>
+                                <th>入力例</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>姓</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>山田</td>
+                                <td>漢字で入力</td>
+                            </tr>
+                            <tr>
+                                <td><code>名</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>太郎</td>
+                                <td>漢字で入力</td>
+                            </tr>
+                            <tr>
+                                <td><code>姓カナ</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>ヤマダ</td>
+                                <td>全角カタカナで入力</td>
+                            </tr>
+                            <tr>
+                                <td><code>名カナ</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>タロウ</td>
+                                <td>全角カタカナで入力</td>
+                            </tr>
+                            <tr>
+                                <td><code>性別</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>M</td>
+                                <td>M（男子）または F（女子）</td>
+                            </tr>
+                            <tr>
+                                <td><code>生年月日</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>2000-04-01</td>
+                                <td>YYYY-MM-DD形式</td>
+                            </tr>
+                            <tr>
+                                <td><code>学年</code></td>
+                                <td><span class="badge bg-secondary">任意</span></td>
+                                <td>3</td>
+                                <td>1〜4, M1, M2, D1〜D3</td>
+                            </tr>
+                            <tr>
+                                <td><code>登録陸協</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>東京</td>
+                                <td>都道府県名</td>
+                            </tr>
+                            <tr>
+                                <td><code>JAAF ID</code></td>
+                                <td><span class="badge bg-danger">必須</span></td>
+                                <td>12345678</td>
+                                <td>陸連登録番号</td>
+                            </tr>
+                            <tr>
+                                <td><code>国籍</code></td>
+                                <td><span class="badge bg-secondary">任意</span></td>
+                                <td>JPN</td>
+                                <td>3文字コード（省略時は JPN）</td>
+                            </tr>
+                            <tr>
+                                <td><code>姓ローマ字</code></td>
+                                <td><span class="badge bg-secondary">任意</span></td>
+                                <td>YAMADA</td>
+                                <td>大文字で入力</td>
+                            </tr>
+                            <tr>
+                                <td><code>名ローマ字</code></td>
+                                <td><span class="badge bg-secondary">任意</span></td>
+                                <td>Taro</td>
+                                <td>先頭大文字</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-download"></i> テンプレート</h5>
+            </div>
+            <div class="card-body">
+                <p>サンプルデータ付きのテンプレートをダウンロードして、入力形式を確認できます。</p>
+                
+                <a href="{% url 'accounts:athlete_bulk_template' %}" class="btn btn-primary w-100">
+                    <i class="bi bi-file-earmark-excel"></i> テンプレートをダウンロード
+                </a>
+                
+                <hr>
+                
+                <h6><i class="bi bi-lightbulb"></i> ヒント</h6>
+                <ul class="small text-muted mb-0">
+                    <li>テンプレートのサンプル行を削除してからデータを入力してください</li>
+                    <li>1行目のヘッダー行は削除しないでください</li>
+                    <li>カナは必ず全角カタカナで入力</li>
+                    <li>JAAF IDが重複する場合は警告が表示されます</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-shield-check"></i> 安全機能</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li><strong>プレビュー確認</strong>: 登録前に全データを確認できます</li>
+                    <li><strong>エラー検出</strong>: 入力ミスを自動検出</li>
+                    <li><strong>重複チェック</strong>: 既存選手との重複を警告</li>
+                    <li><strong>取消可能</strong>: プレビュー後に登録をキャンセルできます</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

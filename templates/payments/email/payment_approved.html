@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background: #f9f9f9; }
+        .section { background: white; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .section-title { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px; }
+        .success-badge { background: #27ae60; color: white; padding: 5px 10px; border-radius: 3px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 8px; text-align: left; border-bottom: 1px solid #eee; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>入金確認完了のお知らせ</h1>
+        </div>
+        
+        <div class="content">
+            <p>{{ user.full_name }} 様</p>
+            <p>日体大記録会エントリーシステム（Nit-Sys）をご利用いただきありがとうございます。</p>
+            <p>お振込みの確認が完了し、<span class="success-badge">エントリーが確定</span>いたしましたのでお知らせいたします。</p>
+            
+            <div class="section">
+                <h3 class="section-title">大会情報</h3>
+                <table>
+                    <tr><td><strong>大会名</strong></td><td>{{ competition.name }}</td></tr>
+                    <tr><td><strong>開催日</strong></td><td>{{ competition.event_date|date:"Y年n月j日" }}</td></tr>
+                    <tr><td><strong>会場</strong></td><td>{{ competition.venue }}</td></tr>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">確定エントリー一覧</h3>
+                <table>
+                    <tr>
+                        <th>選手名</th>
+                        <th>種目</th>
+                        <th>申告タイム</th>
+                    </tr>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.athlete.full_name }}</td>
+                        <td>{{ entry.race.name }}</td>
+                        <td>{{ entry.declared_time_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">入金情報</h3>
+                <table>
+                    <tr><td><strong>入金確認日</strong></td><td>{{ payment.reviewed_at|date:"Y年n月j日 H:i" }}</td></tr>
+                    <tr><td><strong>入金金額</strong></td><td>{{ entry_group.total_amount|floatformat:0 }}円</td></tr>
+                </table>
+            </div>
+            
+            <p>番組編成が確定次第、組分け情報をシステム上でご確認いただけます。<br>
+            大会当日は、受付にてお名前をお伝えください。</p>
+            
+            <p>ご不明な点がございましたら、大会事務局までお問い合わせください。</p>
+        </div>
+        
+        <div class="footer">
+            <p>日体大記録会エントリーシステム（Nit-Sys）</p>
+        </div>
+    </div>
+</body>
+</html>

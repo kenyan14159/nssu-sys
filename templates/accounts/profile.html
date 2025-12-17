@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}プロフィール{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-person"></i> プロフィール</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>アカウント情報</span>
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil"></i> 編集
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 30%;">氏名</th>
+                        <td>{{ user.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>フリガナ</th>
+                        <td>{{ user.full_name_kana }}</td>
+                    </tr>
+                    <tr>
+                        <th>メールアドレス</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>電話番号</th>
+                        <td>{{ user.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>アカウント種別</th>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge bg-warning text-dark">管理者</span>
+                            {% elif user.is_individual %}
+                                <span class="badge bg-info">個人</span>
+                            {% else %}
+                                <span class="badge bg-primary">団体</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    {% if user.organization %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">所属団体情報</div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 30%;">団体名</th>
+                        <td>{{ user.organization.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>略称</th>
+                        <td>{{ user.organization.short_name|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>代表者</th>
+                        <td>{{ user.organization.representative_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>陸連コード</th>
+                        <td>{{ user.organization.jaaf_code|default:"-" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

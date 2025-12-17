@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}エントリー削除{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-trash text-danger"></i> エントリー削除</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <p>以下のエントリーを削除してもよろしいですか？</p>
+                
+                <div class="alert alert-secondary">
+                    <strong>{{ entry.race.name }}</strong><br>
+                    選手: {{ entry.athlete.full_name }}<br>
+                    申告タイム: {{ entry.declared_time_display }}
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> 削除する
+                        </button>
+                        <a href="{% url 'entries:cart' competition_pk=competition.pk %}" class="btn btn-outline-secondary">
+                            キャンセル
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

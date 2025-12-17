@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}強制承認検索 - トラブルデスク{% endblock %}
+
+{% block extra_css %}
+<style>
+    .unpaid-entry {
+        background-color: #f8d7da !important;
+    }
+    .force-approve-btn {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'payments:admin_list' %}">入金管理</a></li>
+            <li class="breadcrumb-item active">強制承認（トラブルデスク）</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-shield-exclamation text-danger"></i> 強制承認（トラブルデスク）</h1>
+    <p class="text-muted">当日振込確認後、画像なしで支払いを承認します。</p>
+</div>
+
+<div class="alert alert-warning">
+    <strong><i class="bi bi-exclamation-triangle"></i> 注意：</strong>
+    この機能は、当日その場で振込を確認した場合のみ使用してください。
+    すべての強制承認はセキュリティログに記録されます。
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="q" class="form-control" placeholder="選手名または団体名で検索" value="{{ query }}" autofocus>
+                    <button type="submit" class="btn btn-primary">検索</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if query %}
+<div class="card">
+    <div class="card-header">
+        検索結果: 「{{ query }}」（{{ results|length }}件）
+    </div>
+    {% if results %}
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>種目</th>
+                    <th>選手</th>
+                    <th>所属</th>
+                    <th>ステータス</th>
+                    <th>金額</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in results %}
+                <tr class="unpaid-entry">
+                    <td>{{ entry.race.name }}</td>
+                    <td>{{ entry.athlete.full_name }}</td>
+                    <td>{{ entry.athlete.organization.name|default:"-" }}</td>
+                    <td>
+                        {% if entry.status == 'payment_uploaded' %}
+                            <span class="badge bg-warning text-dark">確認中</span>
+                        {% else %}
+                            <span class="badge bg-danger">未払い</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.race.competition.entry_fee|default:"3,000" }}円</td>
+                    <td class="text-end">
+                        {% for group in entry.entry_groups.all %}
+                            <a href="{% url 'payments:force_approve' entry_group_pk=group.pk %}" 
+                               class="btn btn-danger force-approve-btn">
+                                <i class="bi bi-shield-check"></i> 強制承認
+                            </a>
+                        {% empty %}
+                            <span class="text-muted">グループなし</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body text-center py-4">
+        <i class="bi bi-check-circle text-success display-4"></i>
+        <p class="mt-3 text-muted">該当する未払いエントリーはありません</p>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-search display-1 text-muted"></i>
+        <p class="mt-3 text-muted">選手名または団体名を入力して検索してください</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

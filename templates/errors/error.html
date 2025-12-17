@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ error_code }} - {{ error_title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center">
+                <h1 class="display-1 fw-bold text-muted">{{ error_code }}</h1>
+                <h2 class="mb-4">{{ error_title }}</h2>
+                <p class="text-muted mb-4">{{ error_message }}</p>
+                
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> 前のページに戻る
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-primary">
+                        <i class="bi bi-house"></i> ホームへ
+                    </a>
+                </div>
+                
+                {% if error_code == 500 %}
+                <div class="mt-5 p-4 bg-light rounded">
+                    <h5><i class="bi bi-info-circle"></i> お困りですか？</h5>
+                    <p class="mb-0 small text-muted">
+                        問題が続く場合は、管理者にお問い合わせください。<br>
+                        その際、以下の情報をお伝えください：
+                    </p>
+                    <ul class="text-start small text-muted mt-2 mb-0">
+                        <li>発生日時: <strong>{% now "Y/m/d H:i" %}</strong></li>
+                        <li>操作内容: どのような操作をしていたか</li>
+                        <li>エラーコード: <strong>{{ error_code }}</strong></li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

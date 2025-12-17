@@ -1,0 +1,330 @@
+/* Nit-Sys Custom Styles */
+
+:root {
+    --nit-primary: #1a365d;
+    --nit-secondary: #c53030;
+    --nit-accent: #2c5282;
+    --nit-light: #f7fafc;
+    --nit-dark: #1a202c;
+}
+
+/* Navbar */
+.navbar-nit {
+    background: linear-gradient(135deg, var(--nit-primary) 0%, var(--nit-accent) 100%);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navbar-nit .navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Page Header */
+.page-header {
+    padding: 2rem 0 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid var(--nit-primary);
+}
+
+.page-header h1 {
+    color: var(--nit-primary);
+    font-weight: 700;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: var(--nit-light);
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Buttons */
+.btn-nit-primary {
+    background: linear-gradient(135deg, var(--nit-primary) 0%, var(--nit-accent) 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-nit-primary:hover {
+    background: linear-gradient(135deg, var(--nit-accent) 0%, var(--nit-primary) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+    color: white;
+}
+
+/* Status Badges */
+.status-badge {
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-confirmed {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-dns {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+/* Tables */
+.table thead th {
+    background-color: var(--nit-primary);
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #ebf4ff;
+}
+
+/* Forms */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--nit-accent);
+    box-shadow: 0 0 0 0.2rem rgba(44, 82, 130, 0.25);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb-item a {
+    color: var(--nit-accent);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+/* Entry Cart */
+.entry-cart {
+    position: sticky;
+    top: 80px;
+}
+
+.entry-cart .card-header {
+    background-color: var(--nit-secondary);
+    color: white;
+}
+
+/* Heat Table */
+.heat-table {
+    font-size: 0.9rem;
+}
+
+.heat-table .lane-number {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--nit-primary);
+}
+
+.heat-table .athlete-name {
+    font-weight: 600;
+}
+
+.heat-table .declared-time {
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+/* Check-in indicator */
+.checkin-status {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.checkin-pending {
+    background-color: #e2e8f0;
+    color: #718096;
+}
+
+.checkin-done {
+    background-color: #48bb78;
+    color: white;
+}
+
+.checkin-dns {
+    background-color: #fc8181;
+    color: white;
+}
+
+/* Dashboard Stats */
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--nit-primary);
+    line-height: 1.2;
+}
+
+.stat-card .stat-label {
+    color: #718096;
+    font-weight: 500;
+}
+
+/* Countdown Timer */
+.countdown-timer {
+    background: linear-gradient(135deg, var(--nit-secondary) 0%, #e53e3e 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.countdown-timer .timer-value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: monospace;
+}
+
+/* Payment proof image */
+.payment-proof-thumb {
+    max-width: 200px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.payment-proof-thumb:hover {
+    transform: scale(1.05);
+}
+
+/* Time input formatting */
+.time-input {
+    font-family: monospace;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+/* Race selection cards */
+.race-card {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.race-card:hover {
+    border-color: var(--nit-accent) !important;
+    background-color: #ebf4ff;
+}
+
+.race-card.selected {
+    border-color: var(--nit-primary) !important;
+    border-width: 2px;
+    background-color: #e6f2ff;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .page-break {
+        page-break-before: always;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Loading spinner */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Toast notifications */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1050;
+}
+
+/* Footer */
+footer {
+    background-color: var(--nit-dark);
+    color: #a0aec0;
+}
+
+footer a {
+    color: #63b3ed;
+}
+
+footer a:hover {
+    color: white;
+}

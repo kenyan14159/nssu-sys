@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}駐車場CSVインポート - {{ competition.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'competitions:dashboard' %}">ダッシュボード</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name }}</a></li>
+            <li class="breadcrumb-item active">駐車場CSVインポート</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-cloud-upload"></i> 駐車場割当CSVインポート</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-upload"></i> CSVファイルアップロード</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label">CSVファイル</label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                        <div class="form-text">
+                            UTF-8またはShift-JIS形式のCSVファイルをアップロードしてください。
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> インポート
+                        </button>
+                        <a href="{% url 'payments:parking_csv_template' %}" class="btn btn-outline-success">
+                            <i class="bi bi-download"></i> テンプレートダウンロード
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-list-ul"></i> 現在の駐車場割当状況</h5>
+                {% if parking_requests %}
+                <a href="{% url 'payments:all_permits_download' competition.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-file-pdf"></i> 全許可証一括ダウンロード
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>団体名</th>
+                                <th>ステータス</th>
+                                <th>駐車場</th>
+                                <th>入庫時間</th>
+                                <th>台数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in parking_requests %}
+                            <tr>
+                                <td>{{ req.organization.name }}</td>
+                                <td>
+                                    <span class="badge {% if req.status == 'assigned' %}bg-success{% elif req.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                                        {{ req.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ req.assigned_parking_lot|default:"-" }}</td>
+                                <td>{{ req.entry_time|time:"H:i"|default:"-" }}</td>
+                                <td>
+                                    {% if req.is_assigned %}
+                                    大{{ req.assigned_large_bus }} / 中{{ req.assigned_medium_bus }} / 車{{ req.assigned_car }}
+                                    {% else %}
+                                    希望: 大{{ req.requested_large_bus }} / 中{{ req.requested_medium_bus }} / 車{{ req.requested_car }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    駐車場申請がありません
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> CSVフォーマット</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm small">
+                    <thead>
+                        <tr>
+                            <th>カラム名</th>
+                            <th>必須</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>団体名</td>
+                            <td><span class="badge bg-danger">必須</span></td>
+                        </tr>
+                        <tr>
+                            <td>駐車場</td>
+                            <td><span class="badge bg-danger">必須</span></td>
+                        </tr>
+                        <tr>
+                            <td>入庫時間</td>
+                            <td>任意</td>
+                        </tr>
+                        <tr>
+                            <td>出庫時間</td>
+                            <td>任意</td>
+                        </tr>
+                        <tr>
+                            <td>大型バス</td>
+                            <td>任意</td>
+                        </tr>
+                        <tr>
+                            <td>中型バス</td>
+                            <td>任意</td>
+                        </tr>
+                        <tr>
+                            <td>乗用車</td>
+                            <td>任意</td>
+                        </tr>
+                        <tr>
+                            <td>備考</td>
+                            <td>任意</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h6 class="mt-4">時刻形式</h6>
+                <ul class="small text-muted">
+                    <li>7:00 または 07:00</li>
+                    <li>7時00分</li>
+                </ul>
+                
+                <h6 class="mt-3">団体名について</h6>
+                <p class="small text-muted">
+                    団体名は完全一致しなくても、システムが類似する団体を自動マッチングします。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

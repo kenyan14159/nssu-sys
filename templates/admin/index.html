@@ -1,0 +1,337 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+    
+    <!-- クイックスタートガイド -->
+    <div class="quick-start-section">
+        <div class="section-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <h2>クイックスタートガイド</h2>
+        </div>
+        <p class="section-desc">初めての方は、以下の手順で大会運営を始めましょう。</p>
+        <ol class="start-steps">
+            <li>
+                <span class="step-num">1</span>
+                <div class="step-content">
+                    <strong>大会を作成</strong>
+                    <a href="{% url 'admin:competitions_competition_add' %}">新しい大会を作成する</a>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">2</span>
+                <div class="step-content">
+                    <strong>種目を追加</strong>
+                    <span>大会編集画面で種目（男子5000mなど）を追加</span>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">3</span>
+                <div class="step-content">
+                    <strong>団体を登録</strong>
+                    <a href="{% url 'admin:accounts_organization_add' %}">参加団体を登録する</a>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">4</span>
+                <div class="step-content">
+                    <strong>選手を登録</strong>
+                    <a href="{% url 'admin:accounts_athlete_add' %}">選手を登録する</a>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">5</span>
+                <div class="step-content">
+                    <strong>エントリー受付開始</strong>
+                    <span>大会の「エントリー受付中」をオンにする</span>
+                </div>
+            </li>
+        </ol>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- よく使う機能 -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <h3>よく使う機能</h3>
+            </div>
+            <div class="quick-actions">
+                <a href="{% url 'admin:competitions_competition_changelist' %}" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="6"></circle>
+                        <path d="M12 14v8"></path>
+                        <path d="M8 22h8"></path>
+                    </svg>
+                    大会一覧
+                </a>
+                <a href="{% url 'admin:entries_entry_changelist' %}" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    エントリー確認
+                </a>
+                <a href="{% url 'admin:payments_payment_changelist' %}?status__exact=pending" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    入金確認待ち
+                </a>
+                <a href="{% url 'admin:accounts_athlete_changelist' %}" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    選手一覧
+                </a>
+                <a href="{% url 'admin:heats_heat_changelist' %}" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    番組編成
+                </a>
+            </div>
+        </div>
+        
+        <!-- ヘルプ・マニュアル -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <h3>ヘルプ・マニュアル</h3>
+            </div>
+            <ul class="help-links">
+                <li>
+                    <a href="/admin/guide/">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        操作マニュアル（初心者向け）
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/guide/#faq">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        よくある質問（FAQ）
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/guide/#troubleshooting">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                        トラブルシューティング
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- 操作のヒント -->
+    <div class="tips-section">
+        <div class="section-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <h3>操作のヒント</h3>
+        </div>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h4>検索のコツ</h4>
+                <p>部分一致で検索できます。「山」で「山田」「中山」などがヒットします。</p>
+            </div>
+            <div class="tip-card">
+                <h4>フィルターを活用</h4>
+                <p>右側のフィルターで絞り込むと、目的のデータを素早く見つけられます。</p>
+            </div>
+            <div class="tip-card">
+                <h4>一括操作</h4>
+                <p>チェックボックスで複数選択し、アクションを選んで一括処理できます。</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- クイック追加セクション -->
+    <div class="quick-add-section">
+        <div class="section-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <h3>クイック追加</h3>
+        </div>
+        <div class="quick-add-grid">
+            <a href="{% url 'admin:accounts_organization_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 21h18"></path>
+                    <path d="M5 21V7l8-4v18"></path>
+                    <path d="M19 21V11l-6-4"></path>
+                    <path d="M9 9v.01"></path>
+                    <path d="M9 12v.01"></path>
+                    <path d="M9 15v.01"></path>
+                    <path d="M9 18v.01"></path>
+                </svg>
+                <span>団体を追加</span>
+            </a>
+            <a href="{% url 'admin:accounts_athlete_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="5" r="3"></circle>
+                    <path d="M12 22V8"></path>
+                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                </svg>
+                <span>選手を追加</span>
+            </a>
+            <a href="{% url 'admin:competitions_competition_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="6"></circle>
+                    <path d="M12 14v8"></path>
+                    <path d="M8 22h8"></path>
+                </svg>
+                <span>大会を追加</span>
+            </a>
+            <a href="{% url 'admin:competitions_race_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                </svg>
+                <span>種目を追加</span>
+            </a>
+            <a href="{% url 'admin:entries_entry_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+                <span>エントリーを追加</span>
+            </a>
+            <a href="{% url 'admin:entries_entrygroup_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                <span>エントリーグループを追加</span>
+            </a>
+            <a href="{% url 'admin:payments_payment_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>入金情報を追加</span>
+            </a>
+            <a href="{% url 'admin:payments_bankaccount_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <span>振込先口座を追加</span>
+            </a>
+            <a href="{% url 'admin:payments_parkingrequest_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="6" width="22" height="12" rx="2" ry="2"></rect>
+                    <circle cx="7" cy="18" r="2"></circle>
+                    <circle cx="17" cy="18" r="2"></circle>
+                </svg>
+                <span>駐車場申請を追加</span>
+            </a>
+            <a href="{% url 'admin:heats_heat_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>組を追加</span>
+            </a>
+            <a href="{% url 'admin:heats_heatassignment_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span>組編成を追加</span>
+            </a>
+            <a href="{% url 'admin:reports_reportlog_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>帳票出力ログを追加</span>
+            </a>
+            <a href="{% url 'admin:news_news_add' %}" class="quick-add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>お知らせを追加</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 標準のダッシュボード内容 -->
+    {{ block.super }}
+    
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<!-- サイドバーにヘルプリンクを追加 -->
+<div class="sidebar-help-card">
+    <div class="sidebar-help-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+        </svg>
+        <span>サポート</span>
+    </div>
+    <div class="sidebar-help-links">
+        <a href="/admin/guide/">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            操作マニュアル
+        </a>
+        <a href="mailto:support@nitsys.jp">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            お問い合わせ
+        </a>
+    </div>
+</div>
+{% endblock %}

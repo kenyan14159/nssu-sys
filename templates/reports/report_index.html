@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}帳票出力{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name }}</a></li>
+            <li class="breadcrumb-item active">帳票出力</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-file-earmark-text"></i> 帳票出力</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- 種目別帳票 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-list-ol"></i> 種目別帳票
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>種目</th>
+                            <th class="text-center">組数</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for race in races %}
+                        <tr>
+                            <td><strong>{{ race.name }}</strong></td>
+                            <td class="text-center">{{ race.heats.count }}組</td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'reports:startlist_csv' race_pk=race.pk %}" class="btn btn-outline-success" title="スタートリストCSV">
+                                        <i class="bi bi-filetype-csv"></i> CSV
+                                    </a>
+                                    <a href="{% url 'reports:program_pdf' race_pk=race.pk %}" class="btn btn-outline-primary" title="プログラムPDF">
+                                        <i class="bi bi-file-pdf"></i> プログラム
+                                    </a>
+                                    <a href="{% url 'reports:all_result_sheets_pdf' race_pk=race.pk %}" class="btn btn-outline-danger" title="結果記録用紙PDF（陸協フォーマット）">
+                                        <i class="bi bi-file-pdf"></i> 結果記録用紙
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- 一括出力 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header" style="background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white;">
+                <i class="bi bi-download"></i> 一括出力
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">全種目のデータを一括でダウンロードできます。</p>
+                <div class="d-grid">
+                    <a href="{% url 'reports:all_data_csv' competition_pk=competition.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-filetype-csv"></i> 全データCSV
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 緊急用出力 -->
+        <div class="card shadow-sm" style="border: 1px solid #e2e8f0;">
+            <div class="card-header" style="background: #f7fafc; color: #4a5568; border-bottom: 1px solid #e2e8f0;">
+                <i class="bi bi-shield-check"></i> 緊急時バックアップ
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">ネットワーク障害時に備え、全データをPDF化してローカル保存できます。</p>
+                <div class="d-grid">
+                    <a href="{% url 'reports:all_data_pdf' competition_pk=competition.pk %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-file-pdf"></i> 緊急用全データPDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

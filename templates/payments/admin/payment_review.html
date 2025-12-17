@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}入金確認{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'payments:admin_list' %}">入金確認一覧</a></li>
+            <li class="breadcrumb-item active">入金確認</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-check-square"></i> 入金確認</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <!-- 振込明細画像 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-image"></i> 振込明細画像
+            </div>
+            <div class="card-body text-center">
+                <a href="{{ payment.receipt_image.url }}" target="_blank">
+                    <img src="{{ payment.receipt_image.url }}" class="img-fluid" style="max-height: 500px;">
+                </a>
+                <p class="mt-2 small text-muted">クリックで拡大表示</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <!-- 申込情報 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> 申込情報
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th style="width: 30%;">団体/個人</th>
+                        <td>{{ payment.entry_group.organization.name|default:"個人" }}</td>
+                    </tr>
+                    <tr>
+                        <th>申込者</th>
+                        <td>{{ payment.entry_group.registered_by.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>大会</th>
+                        <td>{{ payment.entry_group.competition.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>エントリー数</th>
+                        <td>{{ payment.entry_group.entries.count }}件</td>
+                    </tr>
+                    <tr>
+                        <th>合計金額</th>
+                        <td class="fw-bold fs-5 text-primary">{{ payment.entry_group.total_amount|default:0 }}円</td>
+                    </tr>
+                    <tr>
+                        <th>計算内訳</th>
+                        <td class="text-muted small">{{ payment.entry_group.entries.count }}名 × {{ payment.entry_group.competition.entry_fee|default:2000 }}円</td>
+                    </tr>
+                    <tr>
+                        <th>申込日時</th>
+                        <td>{{ payment.entry_group.created_at|date:"Y/m/d H:i" }}</td>
+                    </tr>
+                </table>
+                
+                <hr>
+                <h6>入力情報</h6>
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th>振込日</th>
+                        <td>{{ payment.payment_date|date:"Y/m/d"|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>振込金額</th>
+                        <td>{% if payment.payment_amount %}{{ payment.payment_amount|stringformat:",.0f" }}円{% else %}-{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>振込名義</th>
+                        <td>{{ payment.payer_name|default:"-" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- エントリー詳細 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-list"></i> エントリー詳細
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>種目</th>
+                            <th>選手</th>
+                            <th>申告</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in payment.entry_group.entries.all %}
+                        <tr>
+                            <td>{{ entry.race.name }}</td>
+                            <td>{{ entry.athlete.full_name }}</td>
+                            <td class="time-display">{{ entry.declared_time_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 確認アクション -->
+        {% if payment.status == 'pending' %}
+        <div class="card">
+            <div class="card-header bg-warning">
+                <i class="bi bi-check2-square"></i> 確認アクション
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="action" id="approve" value="approve" checked>
+                            <label class="form-check-label" for="approve">
+                                <span class="text-success"><i class="bi bi-check-circle"></i> 承認</span>
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="action" id="reject" value="reject">
+                            <label class="form-check-label" for="reject">
+                                <span class="text-danger"><i class="bi bi-x-circle"></i> 却下</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="note" class="form-label">メモ（却下理由など）</label>
+                        <textarea name="note" id="note" class="form-control" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> 実行
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    {% if payment.status == 'approved' %}
+                        <span class="badge badge-confirmed fs-5">承認済み</span>
+                    {% else %}
+                        <span class="badge badge-cancelled fs-5">却下</span>
+                    {% endif %}
+                    <p class="mt-2 mb-0">
+                        確認者: {{ payment.reviewed_by.full_name }}<br>
+                        <small class="text-muted">{{ payment.reviewed_at|date:"Y/m/d H:i" }}</small>
+                    </p>
+                    {% if payment.review_note %}
+                    <p class="mt-2 mb-0 text-muted">{{ payment.review_note }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

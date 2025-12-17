@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ heat }} 詳細{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'heats:management' competition_pk=heat.race.competition.pk %}">番組編成</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'heats:list' race_pk=heat.race.pk %}">{{ heat.race.name }}</a></li>
+            <li class="breadcrumb-item active">{{ heat.heat_number }}組</li>
+        </ol>
+    </nav>
+    <h1>{{ heat.race.name }} {{ heat.heat_number }}組</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>選手一覧（{{ assignments.count }}名）</span>
+                {% if heat.is_finalized %}
+                    <span class="badge bg-success">確定済み</span>
+                {% endif %}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">腰番号</th>
+                            <th>選手</th>
+                            <th>所属</th>
+                            <th>申告タイム</th>
+                            <th>状態</th>
+                            <th>点呼</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assignment in assignments %}
+                        <tr {% if assignment.status == 'dns' %}class="table-secondary"{% endif %}>
+                            <td class="text-center fw-bold">{{ assignment.bib_number }}</td>
+                            <td>{{ assignment.entry.athlete.full_name }}</td>
+                            <td>{{ assignment.entry.athlete.organization.short_name|default:"-" }}</td>
+                            <td class="time-display">{{ assignment.entry.declared_time_display }}</td>
+                            <td>
+                                {% if assignment.status == 'dns' %}
+                                    <span class="badge bg-danger">DNS</span>
+                                {% elif assignment.status == 'assigned' %}
+                                    <span class="badge bg-primary">出走予定</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ assignment.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if assignment.checked_in %}
+                                    <span class="badge bg-success"><i class="bi bi-check"></i></span>
+                                {% else %}
+                                    <span class="badge bg-secondary">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if assignment.status != 'dns' %}
+                                <form action="{% url 'heats:dns' assignment_pk=assignment.pk %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('欠場にしますか？')">
+                                        DNS
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> 組情報
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th>種目</th>
+                        <td>{{ heat.race.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>組番号</th>
+                        <td>{{ heat.heat_number }}組</td>
+                    </tr>
+                    <tr>
+                        <th>人数</th>
+                        <td>{{ assignments.count }}名</td>
+                    </tr>
+                    <tr>
+                        <th>開始予定</th>
+                        <td>{{ heat.scheduled_start_time|time:"H:i"|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>状態</th>
+                        <td>
+                            {% if heat.is_finalized %}
+                                <span class="badge bg-success">確定</span>
+                            {% else %}
+                                <span class="badge bg-warning">編集可能</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <i class="bi bi-download"></i> 帳票出力
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'reports:rollcall_pdf' heat_pk=heat.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-file-pdf"></i> 点呼用リストPDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

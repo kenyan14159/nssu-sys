@@ -1,0 +1,283 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}操作マニュアル | NIT-SYS{% endblock %}
+
+{% block content %}
+<div id="content-main" class="guide-page">
+    <h1 class="guide-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        操作マニュアル
+    </h1>
+    
+    <!-- 目次 -->
+    <div class="toc-section">
+        <h2>目次</h2>
+        <ol class="toc-list">
+            <li><a href="#getting-started">はじめに</a></li>
+            <li><a href="#competition">大会の作成・管理</a></li>
+            <li><a href="#organization">団体・選手の管理</a></li>
+            <li><a href="#entry">エントリーの管理</a></li>
+            <li><a href="#payment">入金確認</a></li>
+            <li><a href="#heat">番組編成</a></li>
+            <li><a href="#faq">よくある質問（FAQ）</a></li>
+            <li><a href="#troubleshooting">トラブルシューティング</a></li>
+        </ol>
+    </div>
+    
+    <!-- はじめに -->
+    <div id="getting-started" class="guide-section">
+        <h2>
+            <span class="section-number">1</span>
+            はじめに
+        </h2>
+        <p>このシステムは、日本体育大学長距離競技会のエントリー・運営管理を行うためのシステムです。</p>
+        
+        <h3>基本的な操作の流れ</h3>
+        <ol class="step-list">
+            <li><strong>大会を作成</strong>する（開催日、エントリー期間を設定）</li>
+            <li><strong>種目を追加</strong>する（男子5000m、女子3000mなど）</li>
+            <li><strong>団体・選手を登録</strong>する</li>
+            <li><strong>エントリー受付を開始</strong>する</li>
+            <li>参加者からエントリーが届いたら<strong>入金を確認</strong>する</li>
+            <li>エントリー締切後、<strong>番組編成</strong>を行う</li>
+            <li><strong>スタートリストを出力</strong>する</li>
+        </ol>
+        
+        <div class="info-box">
+            <strong>ヒント</strong>
+            <p>左側のメニューから各機能にアクセスできます。迷ったらホームに戻ってください。</p>
+        </div>
+    </div>
+    
+    <!-- 大会の作成 -->
+    <div id="competition" class="guide-section">
+        <h2>
+            <span class="section-number">2</span>
+            大会の作成・管理
+        </h2>
+        
+        <h3>新しい大会を作成する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>大会</strong>」→「<strong>＋追加</strong>」をクリック</li>
+            <li>大会名（例：第325回日体大長距離競技会）を入力</li>
+            <li>開催日を選択</li>
+            <li>エントリー開始日時・締切日時を設定</li>
+            <li>参加費を入力（デフォルト: 2,000円）</li>
+            <li>「<strong>保存</strong>」ボタンをクリック</li>
+        </ol>
+        
+        <h3>種目を追加する</h3>
+        <ol class="step-list">
+            <li>作成した大会の編集画面を開く</li>
+            <li>画面下部の「種目」セクションで「<strong>種目を追加</strong>」をクリック</li>
+            <li>種目名（例：男子5000m）、距離、性別を選択</li>
+            <li>1組あたりの定員を設定（デフォルト: 40名）</li>
+            <li>必要に応じてNCG設定を行う</li>
+        </ol>
+        
+        <div class="warning-box">
+            <strong>注意</strong>
+            <p>「公開中」にチェックを入れないと、参加者から大会が見えません。エントリーを受け付けるには「エントリー受付中」もオンにしてください。</p>
+        </div>
+    </div>
+    
+    <!-- 団体・選手 -->
+    <div id="organization" class="guide-section">
+        <h2>
+            <span class="section-number">3</span>
+            団体・選手の管理
+        </h2>
+        
+        <h3>団体を登録する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>団体</strong>」→「<strong>＋追加</strong>」</li>
+            <li>団体名、フリガナ、略称を入力</li>
+            <li>代表者の氏名・連絡先を入力</li>
+            <li>「保存」をクリック</li>
+        </ol>
+        
+        <h3>選手を登録する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>選手</strong>」→「<strong>＋追加</strong>」</li>
+            <li>氏名（漢字・カナ・ローマ字）を入力</li>
+            <li>性別、生年月日を入力</li>
+            <li>所属団体を選択</li>
+            <li><strong class="required-note">登録陸協・JAAF IDは必須です！</strong>（公認申請に必要）</li>
+            <li>「保存」をクリック</li>
+        </ol>
+        
+        <div class="success-box">
+            <strong>便利機能</strong>
+            <p>選手一覧で複数の選手を選択し、「CSVでエクスポート」アクションを使うと、一覧をExcelで開けるCSVファイルとしてダウンロードできます。</p>
+        </div>
+    </div>
+    
+    <!-- エントリー管理 -->
+    <div id="entry" class="guide-section">
+        <h2>
+            <span class="section-number">4</span>
+            エントリーの管理
+        </h2>
+        
+        <h3>エントリー状況を確認する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>エントリー</strong>」をクリック</li>
+            <li>右側のフィルターで大会や種目で絞り込み可能</li>
+            <li>ステータスで「申込中」「確定」などを確認</li>
+        </ol>
+        
+        <h3>ステータスの意味</h3>
+        <table class="status-table">
+            <thead>
+                <tr>
+                    <th>ステータス</th>
+                    <th>意味</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>申込中（入金待ち）</td>
+                    <td>申込完了、入金待ちの状態</td>
+                </tr>
+                <tr>
+                    <td>入金確認待ち</td>
+                    <td>振込明細がアップロードされ、確認待ち</td>
+                </tr>
+                <tr>
+                    <td>確定</td>
+                    <td>入金確認済み、エントリー確定</td>
+                </tr>
+                <tr>
+                    <td>キャンセル</td>
+                    <td>申込がキャンセルされた</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 入金確認 -->
+    <div id="payment" class="guide-section">
+        <h2>
+            <span class="section-number">5</span>
+            入金確認
+        </h2>
+        
+        <h3>入金を確認・承認する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>入金情報</strong>」をクリック</li>
+            <li>ステータスが「確認待ち」のものを確認</li>
+            <li>振込明細画像をクリックして内容を確認</li>
+            <li>金額・振込名義が正しければ「<strong>確認</strong>」ボタンをクリック</li>
+            <li>確認画面で「<strong>承認</strong>」を選択して保存</li>
+        </ol>
+        
+        <div class="danger-box">
+            <strong>重要</strong>
+            <p>入金を承認すると、関連するすべてのエントリーが「確定」に変更され、参加者にメールが送信されます。</p>
+        </div>
+    </div>
+    
+    <!-- 番組編成 -->
+    <div id="heat" class="guide-section">
+        <h2>
+            <span class="section-number">6</span>
+            番組編成
+        </h2>
+        
+        <h3>組を作成する</h3>
+        <ol class="step-list">
+            <li>左メニューから「<strong>組</strong>」→「<strong>＋追加</strong>」</li>
+            <li>種目と組番号を入力</li>
+            <li>開始予定時刻を設定</li>
+            <li>「保存」をクリック</li>
+            <li>組編成画面でエントリーを組に割り当て</li>
+        </ol>
+        
+        <h3>スタートリストを出力する</h3>
+        <ol class="step-list">
+            <li>組一覧で対象の組を選択</li>
+            <li>アクションから「<strong>CSVでエクスポート（スタートリスト）</strong>」を選択</li>
+            <li>「実行」ボタンをクリック</li>
+        </ol>
+    </div>
+    
+    <!-- FAQ -->
+    <div id="faq" class="guide-section">
+        <h2>
+            <span class="section-number">7</span>
+            よくある質問（FAQ）
+        </h2>
+        
+        <div class="faq-item">
+            <h4>Q: 申告タイムはどのように入力しますか？</h4>
+            <p><strong>A:</strong> 秒単位で入力します。例えば14分30秒の場合は「870.00」と入力してください。（14分 × 60秒 + 30秒 = 870秒）</p>
+        </div>
+        
+        <div class="faq-item">
+            <h4>Q: 間違えてエントリーを削除してしまいました</h4>
+            <p><strong>A:</strong> 削除したデータは復元できません。同じ内容で新規作成してください。削除前には必ず確認画面が表示されますので、慎重に操作してください。</p>
+        </div>
+        
+        <div class="faq-item">
+            <h4>Q: 大会を非公開にしたらエントリーはどうなりますか？</h4>
+            <p><strong>A:</strong> 既存のエントリーはそのまま残ります。新規エントリーができなくなるだけです。</p>
+        </div>
+        
+        <div class="faq-item">
+            <h4>Q: NCG種目とは何ですか？</h4>
+            <p><strong>A:</strong> NCG（Next Generation Challenge）は、申告タイム上位者のみが出走できる特別組です。定員を超えた選手は自動的に一般種目にスライドされます。</p>
+        </div>
+    </div>
+    
+    <!-- トラブルシューティング -->
+    <div id="troubleshooting" class="guide-section">
+        <h2>
+            <span class="section-number">8</span>
+            トラブルシューティング
+        </h2>
+        
+        <div class="trouble-item">
+            <h4>ログインできない</h4>
+            <ul>
+                <li>メールアドレスが正しいか確認してください</li>
+                <li>パスワードの大文字・小文字を確認してください</li>
+                <li>Caps Lockがオンになっていないか確認してください</li>
+            </ul>
+        </div>
+        
+        <div class="trouble-item">
+            <h4>保存ボタンを押してもエラーが出る</h4>
+            <ul>
+                <li>必須項目（*マーク）がすべて入力されているか確認</li>
+                <li>日付や数値の形式が正しいか確認</li>
+                <li>エラーメッセージを読んで、指摘された項目を修正</li>
+            </ul>
+        </div>
+        
+        <div class="trouble-item">
+            <h4>画面が正しく表示されない</h4>
+            <ul>
+                <li>ブラウザのキャッシュをクリアしてください（Ctrl+Shift+R または Cmd+Shift+R）</li>
+                <li>別のブラウザで試してください</li>
+                <li>インターネット接続を確認してください</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- 戻るボタン -->
+    <div class="back-button-section">
+        <a href="{% url 'admin:index' %}" class="back-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            ダッシュボードに戻る
+        </a>
+    </div>
+    
+</div>
+{% endblock %}

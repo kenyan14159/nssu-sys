@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}選手一括登録 - プレビュー{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-eye"></i> 登録プレビュー</h1>
+    <a href="{% url 'accounts:athlete_bulk_upload' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> アップロードに戻る
+    </a>
+</div>
+
+<!-- サマリー -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center border-primary">
+            <div class="card-body py-3">
+                <h2 class="mb-0 text-primary">{{ total_count }}</h2>
+                <small class="text-muted">総件数</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-success">
+            <div class="card-body py-3">
+                <h2 class="mb-0 text-success">{{ valid_count }}</h2>
+                <small class="text-muted">登録可能</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-danger">
+            <div class="card-body py-3">
+                <h2 class="mb-0 text-danger">{{ error_count }}</h2>
+                <small class="text-muted">エラー</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-warning">
+            <div class="card-body py-3">
+                <h2 class="mb-0 text-warning">{{ existing_count }}</h2>
+                <small class="text-muted">既存重複</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if error_count > 0 %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <strong>{{ error_count }}件のエラー</strong>があります。エラーのある行は登録されません。
+</div>
+{% endif %}
+
+{% if existing_count > 0 %}
+<div class="alert alert-warning">
+    <i class="bi bi-info-circle"></i>
+    <strong>{{ existing_count }}件の重複</strong>が検出されました。既存選手は登録をスキップします。
+</div>
+{% endif %}
+
+<!-- プレビューテーブル -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-table"></i> 選手データ</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 60px;">行</th>
+                        <th style="width: 80px;">状態</th>
+                        <th>氏名</th>
+                        <th>カナ</th>
+                        <th>性別</th>
+                        <th>生年月日</th>
+                        <th>学年</th>
+                        <th>登録陸協</th>
+                        <th>JAAF ID</th>
+                        <th>国籍</th>
+                        <th>備考</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for athlete in athletes %}
+                    <tr class="{% if not athlete.valid %}table-danger{% elif athlete.existing_id %}table-warning{% endif %}">
+                        <td>{{ athlete.row_num }}</td>
+                        <td>
+                            {% if not athlete.valid %}
+                            <span class="badge bg-danger"><i class="bi bi-x"></i> エラー</span>
+                            {% elif athlete.existing_id %}
+                            <span class="badge bg-warning text-dark"><i class="bi bi-exclamation"></i> 重複</span>
+                            {% else %}
+                            <span class="badge bg-success"><i class="bi bi-check"></i> OK</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ athlete.last_name|default:"-" }} {{ athlete.first_name|default:"" }}</td>
+                        <td>{{ athlete.last_name_kana|default:"-" }} {{ athlete.first_name_kana|default:"" }}</td>
+                        <td>
+                            {% if athlete.gender == 'M' %}
+                            <span class="badge bg-primary">男子</span>
+                            {% elif athlete.gender == 'F' %}
+                            <span class="badge bg-danger">女子</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ athlete.birth_date|default:"-" }}</td>
+                        <td>{{ athlete.grade|default:"-" }}</td>
+                        <td>{{ athlete.registered_pref|default:"-" }}</td>
+                        <td>{{ athlete.jaaf_id|default:"-" }}</td>
+                        <td>{{ athlete.nationality|default:"JPN" }}</td>
+                        <td>
+                            {% if athlete.errors %}
+                            <ul class="list-unstyled mb-0 small text-danger">
+                                {% for error in athlete.errors %}
+                                <li><i class="bi bi-x-circle"></i> {{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% if athlete.warnings %}
+                            <ul class="list-unstyled mb-0 small text-warning">
+                                {% for warning in athlete.warnings %}
+                                <li><i class="bi bi-exclamation-triangle"></i> {{ warning }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 登録ボタン -->
+<div class="card mt-4">
+    <div class="card-body">
+        <form method="post" action="{% url 'accounts:athlete_bulk_register' %}">
+            {% csrf_token %}
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="skip_existing" name="skip_existing" value="true" checked>
+                        <label class="form-check-label" for="skip_existing">
+                            既存の選手（JAAF ID重複）はスキップする
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'accounts:athlete_bulk_upload' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-x"></i> キャンセル
+                    </a>
+                    
+                    {% if valid_count > 0 %}
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle"></i> {{ valid_count }}名を登録
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-secondary btn-lg" disabled>
+                        <i class="bi bi-x-circle"></i> 登録可能なデータがありません
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

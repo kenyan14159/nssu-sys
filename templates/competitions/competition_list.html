@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}大会一覧{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        大会一覧
+    </h1>
+</div>
+
+<!-- 開催予定の大会 -->
+<div class="section-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <h5>開催予定</h5>
+</div>
+
+{% if upcoming_competitions %}
+<div class="competition-grid">
+    {% for comp in upcoming_competitions %}
+    <div class="competition-card-wrapper">
+        <div class="card competition-card h-100">
+            <div class="card-body">
+                <h5 class="competition-card-title">{{ comp.name }}</h5>
+                <div class="competition-card-info">
+                    <div class="info-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>{{ comp.event_date_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="venue-text">{{ comp.venue }}</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span>参加費 {{ comp.entry_fee|default:2000 }}円</span>
+                    </div>
+                </div>
+                <div class="status-badge">
+                    {% if comp.can_entry %}
+                        <span class="badge-entry-open">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            エントリー受付中
+                        </span>
+                    {% else %}
+                        <span class="badge-entry-closed">{{ comp.entry_status }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'competitions:detail' comp.pk %}" class="btn btn-primary w-100">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                    詳細を見る
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card mb-4">
+    <div class="card-body empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <p>開催予定の大会はありません</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- 過去の大会 -->
+{% if past_competitions %}
+<hr class="my-4">
+<div class="section-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <h5>過去の大会</h5>
+</div>
+
+<div class="past-competitions-list">
+    {% for comp in past_competitions %}
+    <a href="{% url 'competitions:detail' comp.pk %}" class="list-group-item list-group-item-action">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <strong>{{ comp.name }}</strong>
+                <span class="text-muted ms-2 past-comp-date">{{ comp.event_date|date:"Y年n月j日" }}</span>
+            </div>
+            <span class="badge-entry-closed">終了</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

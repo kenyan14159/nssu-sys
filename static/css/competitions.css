@@ -1,0 +1,1094 @@
+/* =============================================================================
+   Competitions ページ - モダンデザイン
+   ============================================================================= */
+
+:root {
+    --comp-primary: #2563eb;
+    --comp-primary-dark: #1d4ed8;
+    --comp-success: #059669;
+    --comp-warning: #d97706;
+    --comp-danger: #dc2626;
+    --comp-gray-50: #f9fafb;
+    --comp-gray-100: #f3f4f6;
+    --comp-gray-200: #e5e7eb;
+    --comp-gray-300: #d1d5db;
+    --comp-gray-400: #9ca3af;
+    --comp-gray-500: #6b7280;
+    --comp-gray-600: #4b5563;
+    --comp-gray-700: #374151;
+    --comp-gray-800: #1f2937;
+    --comp-gray-900: #111827;
+    --comp-radius: 8px;
+    --comp-radius-lg: 12px;
+    --comp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --comp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* -----------------------------------------------------------------------------
+   ページヘッダー改善
+   ----------------------------------------------------------------------------- */
+.page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--comp-gray-200);
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--comp-gray-900);
+    margin: 0;
+}
+
+.page-header h1 i,
+.page-header h1 svg {
+    color: var(--comp-primary);
+}
+
+.page-header .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+}
+
+.page-header .breadcrumb-item a {
+    color: var(--comp-primary);
+    text-decoration: none;
+}
+
+.page-header .breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.page-header .breadcrumb-item.active {
+    color: var(--comp-gray-500);
+}
+
+/* -----------------------------------------------------------------------------
+   カード改善
+   ----------------------------------------------------------------------------- */
+.card {
+    background: #fff;
+    border: 1px solid var(--comp-gray-200);
+    border-radius: var(--comp-radius-lg);
+    box-shadow: var(--comp-shadow);
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-bottom: 1px solid var(--comp-gray-100);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    color: var(--comp-gray-800);
+}
+
+.card-header i {
+    margin-right: 8px;
+    color: var(--comp-gray-500);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-footer {
+    background: var(--comp-gray-50);
+    border-top: 1px solid var(--comp-gray-100);
+    padding: 1rem 1.25rem;
+}
+
+/* -----------------------------------------------------------------------------
+   大会カード（競技会一覧）
+   ----------------------------------------------------------------------------- */
+.competition-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.competition-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--comp-shadow-md);
+}
+
+.competition-card .card-body {
+    flex: 1;
+}
+
+.competition-card .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--comp-gray-900);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.competition-card .info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--comp-gray-600);
+    font-size: 0.9rem;
+}
+
+.competition-card .info-item i {
+    width: 16px;
+    color: var(--comp-gray-400);
+}
+
+.competition-card .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+/* ステータスバッジ改善 */
+.badge-entry-open {
+    background: #ecfdf5;
+    color: var(--comp-success);
+    border: 1px solid #a7f3d0;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-entry-closed {
+    background: var(--comp-gray-100);
+    color: var(--comp-gray-600);
+    border: 1px solid var(--comp-gray-200);
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-entry-upcoming {
+    background: #eff6ff;
+    color: var(--comp-primary);
+    border: 1px solid #bfdbfe;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* -----------------------------------------------------------------------------
+   セクションヘッダー
+   ----------------------------------------------------------------------------- */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--comp-gray-200);
+}
+
+.section-header h5,
+.section-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--comp-gray-800);
+    margin: 0;
+}
+
+.section-header i,
+.section-header svg {
+    color: var(--comp-primary);
+}
+
+/* -----------------------------------------------------------------------------
+   リストグループ改善
+   ----------------------------------------------------------------------------- */
+.list-group-flush .list-group-item {
+    border-left: 0;
+    border-right: 0;
+    padding: 1rem 0;
+}
+
+.list-group-flush .list-group-item:first-child {
+    border-top: 0;
+}
+
+.list-group-item-action {
+    color: var(--comp-gray-700);
+    transition: background-color 0.15s ease;
+}
+
+.list-group-item-action:hover {
+    background-color: var(--comp-gray-50);
+    color: var(--comp-gray-900);
+}
+
+.list-group-item h6 {
+    font-weight: 600;
+    color: var(--comp-gray-900);
+    margin-bottom: 4px;
+}
+
+.list-group-item small {
+    color: var(--comp-gray-500);
+}
+
+/* -----------------------------------------------------------------------------
+   過去の大会リスト
+   ----------------------------------------------------------------------------- */
+.past-competitions-list {
+    border: 1px solid var(--comp-gray-200);
+    border-radius: var(--comp-radius);
+    overflow: hidden;
+}
+
+.past-competitions-list .list-group-item {
+    padding: 12px 16px;
+    border-left: 0;
+    border-right: 0;
+}
+
+.past-competitions-list .list-group-item:last-child {
+    border-bottom: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   ダッシュボード改善
+   ----------------------------------------------------------------------------- */
+.dashboard-section {
+    margin-bottom: 1.5rem;
+}
+
+/* ニュースセクション */
+.news-section {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--comp-radius-lg);
+    padding: 0;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.news-section .news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--comp-primary) 0%, #3b82f6 100%);
+    color: #fff;
+    padding: 12px 20px;
+}
+
+.news-section .news-header span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.news-section .news-header .btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 4px 12px;
+}
+
+.news-section .news-header .btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.news-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: background-color 0.15s ease;
+}
+
+.news-item:last-child {
+    border-bottom: 0;
+}
+
+.news-item:hover {
+    background: rgba(255,255,255,0.7);
+}
+
+.news-item .news-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.news-item .news-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.news-item .news-title {
+    color: var(--comp-gray-700);
+    font-size: 0.9rem;
+}
+
+.news-item .news-date {
+    color: var(--comp-gray-400);
+    font-size: 0.8rem;
+}
+
+.news-item-important {
+    background: #fef2f2;
+}
+
+.news-item-important .news-title {
+    color: var(--comp-danger);
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------------
+   クイックリンク
+   ----------------------------------------------------------------------------- */
+.quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--comp-gray-50);
+    border: 1px solid var(--comp-gray-200);
+    border-radius: var(--comp-radius);
+    color: var(--comp-gray-700);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.15s ease;
+}
+
+.quick-link-btn i {
+    color: var(--comp-gray-400);
+    font-size: 1.1rem;
+}
+
+.quick-link-btn:hover {
+    background: #fff;
+    border-color: var(--comp-primary);
+    color: var(--comp-primary);
+}
+
+.quick-link-btn:hover i {
+    color: var(--comp-primary);
+}
+
+/* -----------------------------------------------------------------------------
+   テーブル改善
+   ----------------------------------------------------------------------------- */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: var(--comp-gray-50);
+    border-bottom: 2px solid var(--comp-gray-200);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--comp-gray-600);
+    padding: 12px 16px;
+}
+
+.table tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--comp-gray-100);
+    color: var(--comp-gray-700);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody tr:hover {
+    background: var(--comp-gray-50);
+}
+
+.table .time-display {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+    color: var(--comp-gray-800);
+}
+
+/* -----------------------------------------------------------------------------
+   バッジ改善
+   ----------------------------------------------------------------------------- */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-confirmed {
+    background: #ecfdf5;
+    color: var(--comp-success);
+    border: 1px solid #a7f3d0;
+}
+
+.badge-pending {
+    background: #fffbeb;
+    color: var(--comp-warning);
+    border: 1px solid #fde68a;
+}
+
+.badge-cancelled {
+    background: #fef2f2;
+    color: var(--comp-danger);
+    border: 1px solid #fecaca;
+}
+
+.badge-processing {
+    background: #eff6ff;
+    color: var(--comp-primary);
+    border: 1px solid #bfdbfe;
+}
+
+/* -----------------------------------------------------------------------------
+   ボタン改善
+   ----------------------------------------------------------------------------- */
+.btn-primary {
+    background: var(--comp-primary);
+    border-color: var(--comp-primary);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--comp-radius);
+    transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+    background: var(--comp-primary-dark);
+    border-color: var(--comp-primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--comp-primary);
+    border-color: var(--comp-primary);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--comp-radius);
+}
+
+.btn-outline-primary:hover {
+    background: var(--comp-primary);
+    border-color: var(--comp-primary);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* -----------------------------------------------------------------------------
+   空状態
+   ----------------------------------------------------------------------------- */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--comp-gray-500);
+}
+
+.empty-state svg,
+.empty-state i {
+    font-size: 3rem;
+    color: var(--comp-gray-300);
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* -----------------------------------------------------------------------------
+   大会詳細ページ
+   ----------------------------------------------------------------------------- */
+.competition-info-table {
+    margin: 0;
+}
+
+.competition-info-table tr {
+    border-bottom: 1px solid var(--comp-gray-100);
+}
+
+.competition-info-table tr:last-child {
+    border-bottom: 0;
+}
+
+.competition-info-table th {
+    width: 140px;
+    padding: 14px 0;
+    font-weight: 500;
+    color: var(--comp-gray-600);
+    background: transparent;
+    vertical-align: middle;
+}
+
+.competition-info-table th i {
+    margin-right: 8px;
+    color: var(--comp-gray-400);
+}
+
+.competition-info-table td {
+    padding: 14px 0;
+    color: var(--comp-gray-800);
+}
+
+.competition-description {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--comp-gray-100);
+    color: var(--comp-gray-600);
+    line-height: 1.7;
+}
+
+/* 種目テーブル */
+.race-table thead th {
+    text-align: center;
+}
+
+.race-table thead th:first-child {
+    text-align: left;
+}
+
+.race-table tbody td {
+    text-align: center;
+}
+
+.race-table tbody td:first-child {
+    text-align: left;
+}
+
+.race-name {
+    font-weight: 600;
+    color: var(--comp-gray-800);
+}
+
+.race-capacity {
+    color: var(--comp-gray-500);
+    font-size: 0.85rem;
+}
+
+.race-count {
+    font-weight: 600;
+    color: var(--comp-gray-700);
+}
+
+.race-full {
+    background: #fef2f2;
+    color: var(--comp-danger);
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* 管理者メニュー */
+.admin-menu-card {
+    border: 2px solid var(--comp-warning);
+}
+
+.admin-menu-card .card-header {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    font-weight: 600;
+}
+
+.admin-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-menu-links .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+/* 注意事項カード */
+.notice-card {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.notice-card .card-header {
+    background: transparent;
+    color: #92400e;
+}
+
+.notice-card .card-body ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.notice-card .card-body li {
+    margin-bottom: 8px;
+    color: var(--comp-gray-700);
+    line-height: 1.5;
+}
+
+.notice-card .card-body li:last-child {
+    margin-bottom: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   申込状況サマリー
+   ----------------------------------------------------------------------------- */
+.entry-summary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--comp-gray-100);
+}
+
+.entry-summary-item:last-child {
+    border-bottom: 0;
+}
+
+.entry-summary-info small {
+    display: block;
+    color: var(--comp-gray-500);
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.entry-summary-info span {
+    font-weight: 600;
+    color: var(--comp-gray-800);
+}
+
+/* -----------------------------------------------------------------------------
+   アラート改善
+   ----------------------------------------------------------------------------- */
+.alert {
+    border: none;
+    border-radius: var(--comp-radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert i {
+    font-size: 1.1rem;
+}
+
+.alert-info {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+/* -----------------------------------------------------------------------------
+   レスポンシブ調整
+   ----------------------------------------------------------------------------- */
+
+/* 大会カードグリッド */
+.competition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.competition-card-wrapper {
+    display: flex;
+}
+
+.competition-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--comp-gray-900);
+    margin-bottom: 0.875rem;
+    line-height: 1.4;
+}
+
+.competition-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.competition-card .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--comp-gray-600);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.competition-card .info-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--comp-gray-400);
+}
+
+.competition-card .venue-text {
+    word-break: break-word;
+}
+
+.past-comp-date {
+    font-size: 0.875rem;
+}
+
+/* 管理パネル大会選択 */
+.admin-select-card {
+    max-width: 800px;
+}
+
+.admin-select-item {
+    padding: 1rem 1.25rem;
+}
+
+.admin-select-item:hover {
+    background-color: var(--comp-gray-50);
+}
+
+.admin-select-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-select-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-select-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--comp-gray-900);
+    margin-bottom: 0.375rem;
+}
+
+.admin-select-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+.admin-select-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--comp-gray-500);
+    font-size: 0.8125rem;
+}
+
+.admin-select-meta-item i {
+    color: var(--comp-gray-400);
+}
+
+.admin-select-venue {
+    word-break: break-word;
+}
+
+.admin-select-action {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.admin-select-action .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+}
+
+.admin-select-action i {
+    color: var(--comp-gray-400);
+}
+
+/* タブレット */
+@media (max-width: 991.98px) {
+    .page-header h1 {
+        font-size: 1.375rem;
+    }
+    
+    .page-header h1 svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .competition-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    .competition-card-title {
+        font-size: 1rem;
+    }
+    
+    .competition-info-table th {
+        width: 120px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .card-footer {
+        padding: 0.875rem 1rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.625rem 1rem;
+    }
+    
+    .btn-primary {
+        padding: 0.625rem 1rem;
+    }
+    
+    .admin-select-item {
+        padding: 0.875rem 1rem;
+    }
+    
+    .admin-select-title {
+        font-size: 0.9375rem;
+    }
+}
+
+/* モバイル */
+@media (max-width: 767.98px) {
+    .page-header {
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.25rem;
+        gap: 8px;
+    }
+    
+    .page-header h1 svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .section-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .section-header h5 {
+        font-size: 1rem;
+    }
+    
+    .section-header svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .competition-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .competition-card-title {
+        font-size: 0.9375rem;
+    }
+    
+    .competition-card .info-item {
+        font-size: 0.8125rem;
+    }
+    
+    .competition-card .info-item svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .badge-entry-open,
+    .badge-entry-closed {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+    
+    .competition-info-table th,
+    .competition-info-table td {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+    }
+    
+    .competition-info-table th {
+        padding-bottom: 4px;
+        border-bottom: 0;
+    }
+    
+    .competition-info-table tr {
+        padding: 12px 0;
+    }
+    
+    .news-section .news-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .news-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .past-competitions-list .list-group-item {
+        padding: 0.875rem 1rem;
+    }
+    
+    .past-comp-date {
+        display: block;
+        margin-left: 0 !important;
+        margin-top: 0.25rem;
+        font-size: 0.8125rem;
+    }
+    
+    /* 管理パネル選択 */
+    .admin-select-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .admin-select-title {
+        font-size: 0.9375rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .admin-select-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .admin-select-meta-item {
+        font-size: 0.8125rem;
+    }
+    
+    .admin-select-action {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--comp-gray-100);
+    }
+    
+    .card-header {
+        padding: 0.875rem 1rem;
+        font-size: 0.9375rem;
+    }
+    
+    .card-body {
+        padding: 0.875rem;
+    }
+    
+    .card-footer {
+        padding: 0.75rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.875rem;
+    }
+    
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.625rem;
+    }
+}
+
+/* 小型モバイル */
+@media (max-width: 374px) {
+    .page-header h1 {
+        font-size: 1.125rem;
+    }
+    
+    .competition-card-title {
+        font-size: 0.875rem;
+    }
+    
+    .competition-card .info-item {
+        font-size: 0.75rem;
+    }
+    
+    .admin-select-title {
+        font-size: 0.875rem;
+    }
+    
+    .admin-select-meta-item {
+        font-size: 0.75rem;
+    }
+}
+
+/* -----------------------------------------------------------------------------
+   アニメーション
+   ----------------------------------------------------------------------------- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.3s ease;
+}
+
+.row > [class*="col-"]:nth-child(1) .card {
+    animation-delay: 0s;
+}
+
+.row > [class*="col-"]:nth-child(2) .card {
+    animation-delay: 0.05s;
+}
+
+.row > [class*="col-"]:nth-child(3) .card {
+    animation-delay: 0.1s;
+}

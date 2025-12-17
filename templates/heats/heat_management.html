@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}番組編成 - {{ competition.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name }}</a></li>
+            <li class="breadcrumb-item active">番組編成</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1><i class="bi bi-diagram-3"></i> 番組編成</h1>
+        <div class="d-flex gap-2">
+            <form method="post" action="{% url 'heats:generate_all' competition_pk=competition.pk %}" class="d-inline" onsubmit="return confirm('全種目の組分けを生成します。NCG種目は自動的にタイム順でNCG組と一般組に振り分けられます。\n\n実行しますか？');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-magic"></i> 全種目一括組分け
+                </button>
+            </form>
+            <form method="post" action="{% url 'heats:assign_bibs' competition_pk=competition.pk %}" class="d-inline" onsubmit="return confirm('ゼッケン番号を採番します。\n\nNCG男子: 1〜, NCG女子: 500〜, 一般男子: 1000〜, 一般女子: 2000〜\n\n実行しますか？');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-123"></i> ゼッケン採番
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-list-ol"></i> 種目一覧
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>種目</th>
+                    <th class="text-center">確定エントリー数</th>
+                    <th class="text-center">組数</th>
+                    <th class="text-center">編成状態</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for race in races %}
+                <tr>
+                    <td>
+                        <strong>{{ race.name }}</strong>
+                        {% if race.is_ncg %}<span class="badge bg-warning text-dark ms-1">NCG</span>{% endif %}
+                    </td>
+                    <td class="text-center">{{ race.entry_count }}名</td>
+                    <td class="text-center">{{ race.heats.count }}組</td>
+                    <td class="text-center">
+                        {% if race.heats.exists %}
+                            {% if race.heats.filter.is_finalized %}
+                                <span class="badge bg-success">確定済み</span>
+                            {% else %}
+                                <span class="badge bg-info">編成済み</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-secondary">未編成</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'heats:list' race_pk=race.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-gear"></i> 編成
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'reports:index' competition_pk=competition.pk %}" class="btn btn-outline-primary">
+        <i class="bi bi-file-earmark-text"></i> 帳票出力へ
+    </a>
+    <a href="{% url 'heats:checkin_search' competition_pk=competition.pk %}" class="btn btn-outline-primary">
+        <i class="bi bi-person-check"></i> 受付・点呼へ
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ news_item.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'news:list' %}">お知らせ</a></li>
+            <li class="breadcrumb-item active">{{ news_item.title|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card">
+    <div class="card-header {% if news_item.is_important %}bg-danger text-white{% endif %}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge {% if news_item.category == 'important' or news_item.category == 'urgent' %}bg-danger{% elif news_item.category == 'correction' %}bg-warning text-dark{% else %}bg-info{% endif %} me-2">
+                    {{ news_item.get_category_display }}
+                </span>
+                {% if news_item.is_important %}
+                <i class="bi bi-exclamation-triangle-fill"></i> 重要なお知らせ
+                {% endif %}
+            </div>
+            <small>{{ news_item.published_at|date:"Y年m月d日 H:i" }}</small>
+        </div>
+    </div>
+    <div class="card-body">
+        <h2 class="card-title {% if news_item.is_important %}text-danger{% endif %}">
+            {{ news_item.title }}
+        </h2>
+        <hr>
+        <div class="news-body" style="white-space: pre-wrap; line-height: 1.8;">{{ news_item.body }}</div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'news:list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> お知らせ一覧に戻る
+    </a>
+</div>
+{% endblock %}

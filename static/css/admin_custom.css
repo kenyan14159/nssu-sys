@@ -1,0 +1,2380 @@
+/* =============================================================================
+   日体大競技会 管理画面 - クリーンデザイン
+   ============================================================================= */
+
+:root {
+    --primary: #1a56db;
+    --primary-dark: #1e40af;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --radius: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* -----------------------------------------------------------------------------
+   基本スタイル
+   ----------------------------------------------------------------------------- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--gray-700);
+    -webkit-font-smoothing: antialiased;
+}
+
+.content-wrapper {
+    background-color: var(--gray-50);
+}
+
+/* -----------------------------------------------------------------------------
+   サイドバー
+   ----------------------------------------------------------------------------- */
+.main-sidebar {
+    box-shadow: var(--shadow);
+}
+
+/* サイドバーの幅を固定（開いている時・閉じている時の両方） */
+.sidebar-mini .main-sidebar,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover {
+    width: 250px;
+}
+
+/* サイドバー閉じている時の幅 */
+.sidebar-mini.sidebar-collapse .main-sidebar {
+    width: 60px;
+}
+
+/* サイドバーアイテムの基本スタイル */
+.nav-sidebar .nav-link {
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    margin: 2px 8px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.nav-sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.nav-sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.nav-sidebar .nav-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 16px 8px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-sidebar .nav-icon {
+    width: 20px;
+    min-width: 20px;
+    margin-right: 10px;
+    text-align: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* サイドバーテキスト */
+.nav-sidebar .nav-link p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* サイドバー折りたたみ時のスタイル調整 */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link {
+    padding: 10px;
+    justify-content: center;
+}
+
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p {
+    display: none;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link {
+    padding: 10px 16px;
+    justify-content: flex-start;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+    display: block;
+}
+
+.brand-link {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px 16px !important;
+}
+
+.brand-link .brand-image {
+    max-height: 28px;
+    margin-right: 8px;
+}
+
+.brand-link .brand-text {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* -----------------------------------------------------------------------------
+   ボタン
+   ----------------------------------------------------------------------------- */
+.btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
+    border: none;
+}
+
+.btn-primary,
+input[type="submit"][name="_save"],
+input[type="submit"][name="_continue"],
+input[type="submit"][name="_addanother"] {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover,
+input[type="submit"]:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success,
+.addlink {
+    background-color: var(--success) !important;
+    color: #fff !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.btn-success:hover,
+.addlink:hover {
+    background-color: #047857 !important;
+}
+
+.btn-danger,
+.deletelink {
+    background-color: var(--danger) !important;
+    color: #fff !important;
+}
+
+.btn-danger:hover,
+.deletelink:hover {
+    background-color: #b91c1c !important;
+}
+
+.btn-secondary {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-secondary:hover {
+    background-color: var(--gray-200);
+}
+
+/* -----------------------------------------------------------------------------
+   フォーム - 洗練されたデザイン
+   ----------------------------------------------------------------------------- */
+
+/* フォーム全体のコンテナ */
+#content-main form {
+    max-width: 800px;
+}
+
+/* フォーム行 */
+.form-row,
+.field-box {
+    margin-bottom: 20px;
+}
+
+.form-row > div,
+.field-box > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* 入力フィールド共通 */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="url"],
+input[type="tel"],
+select,
+textarea {
+    font-size: 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    background-color: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+/* テキストエリア */
+textarea {
+    min-height: 100px;
+    max-width: 600px;
+    resize: vertical;
+}
+
+/* フォーカス状態 */
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    outline: none;
+}
+
+/* ラベル */
+label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+    font-size: 13px;
+    display: block;
+}
+
+/* 必須マーク */
+label.required::after,
+.required label::after {
+    content: " *";
+    color: var(--danger);
+    font-weight: bold;
+}
+
+/* ヘルプテキスト */
+.helptext,
+.help,
+p.help {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 6px;
+    padding: 0;
+    background: none;
+    border: none;
+    line-height: 1.5;
+}
+
+/* セレクトボックス */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+/* チェックボックス・ラジオボタン */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+/* チェックボックス付きラベル */
+.checkbox label,
+label.vCheckboxLabel {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+/* 日付・時刻入力 */
+.vDateField,
+.vTimeField {
+    max-width: 200px;
+}
+
+/* 数値入力 */
+input[type="number"] {
+    max-width: 200px;
+}
+
+/* 横並びフィールド（氏名など）- バランス改善 */
+.form-row.field-last_name.field-first_name,
+.form-row.field-last_name_kana.field-first_name_kana,
+.form-row.field-last_name_en.field-first_name_en {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 600px;
+}
+
+.form-row.field-last_name.field-first_name > div,
+.form-row.field-last_name_kana.field-first_name_kana > div,
+.form-row.field-last_name_en.field-first_name_en > div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 横並びフィールド内の入力欄幅をリセット */
+.form-row.field-last_name.field-first_name input,
+.form-row.field-last_name_kana.field-first_name_kana input,
+.form-row.field-last_name_en.field-first_name_en input {
+    max-width: 100%;
+    width: 100%;
+}
+
+/* 横並びフィールド内のラベル */
+.form-row.field-last_name.field-first_name label,
+.form-row.field-last_name_kana.field-first_name_kana label,
+.form-row.field-last_name_en.field-first_name_en label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* 横並びフィールド内のヘルプテキスト */
+.form-row.field-last_name.field-first_name .help,
+.form-row.field-last_name_kana.field-first_name_kana .help,
+.form-row.field-last_name_en.field-first_name_en .help {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 4px;
+}
+
+/* 読み取り専用フィールド */
+.readonly,
+input[readonly],
+.vReadOnlyField {
+    background-color: var(--gray-100);
+    color: var(--gray-600);
+    cursor: not-allowed;
+}
+
+/* エラー状態 */
+.errornote {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0 0;
+}
+
+.errorlist li {
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.errors input,
+.errors select,
+.errors textarea,
+input.error,
+select.error {
+    border-color: var(--danger);
+}
+
+/* 保存ボタンエリア */
+.submit-row {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.submit-row input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.submit-row input[name="_save"] {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+}
+
+.submit-row input[name="_save"]:hover {
+    background: var(--primary-dark);
+}
+
+.submit-row input[name="_continue"],
+.submit-row input[name="_addanother"] {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.submit-row input[name="_continue"]:hover,
+.submit-row input[name="_addanother"]:hover {
+    background: var(--gray-200);
+}
+
+.submit-row .deletelink-box {
+    margin-left: auto;
+}
+
+.submit-row .deletelink {
+    color: var(--danger);
+    background: transparent;
+    padding: 10px 16px;
+}
+
+.submit-row .deletelink:hover {
+    background: #fef2f2;
+}
+
+/* -----------------------------------------------------------------------------
+   テーブル
+   ----------------------------------------------------------------------------- */
+.table,
+#result_list {
+    font-size: 13px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: #fff;
+}
+
+.table th {
+    background-color: var(--gray-50);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--gray-600);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: var(--gray-50);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* -----------------------------------------------------------------------------
+   カード・フィールドセット - 洗練されたデザイン
+   ----------------------------------------------------------------------------- */
+fieldset,
+.card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+}
+
+fieldset.module {
+    padding: 0;
+    overflow: hidden;
+}
+
+fieldset.module h2,
+fieldset legend,
+.card-header {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    padding: 16px 24px;
+    margin: 0;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+fieldset.module .form-row:first-of-type {
+    padding-top: 20px;
+}
+
+fieldset.module .form-row {
+    padding: 0 24px 16px 24px;
+}
+
+fieldset.module .form-row:last-child {
+    padding-bottom: 24px;
+}
+
+/* フィールドセットの説明文（セクションヘッダー直下） */
+fieldset .description {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin: 0;
+    padding: 10px 24px;
+    background-color: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    line-height: 1.5;
+}
+
+/* descriptionの後の最初のフォーム行 */
+fieldset .description + .form-row {
+    margin-top: 20px;
+}
+
+/* インラインフォーム */
+.inline-group {
+    margin-top: 24px;
+}
+
+.inline-group h2 {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 24px;
+    margin: 0;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-bottom: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.inline-related {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.inline-related h3 {
+    background: var(--gray-50);
+    padding: 12px 16px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.inline-related fieldset {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 16px;
+}
+
+/* 空のインライン */
+.empty-form {
+    display: none;
+}
+
+.add-row {
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    margin-top: 8px;
+}
+
+.add-row a {
+    color: var(--primary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.add-row a:hover {
+    text-decoration: underline;
+}
+
+/* -----------------------------------------------------------------------------
+   検索・フィルター
+   ----------------------------------------------------------------------------- */
+#searchbar,
+#changelist-search {
+    background: #fff;
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+#searchbar input[type="text"],
+#changelist-search input[type="text"] {
+    padding: 10px 16px;
+    border-radius: 20px;
+    min-width: 300px;
+    border: 1px solid var(--gray-300);
+}
+
+#searchbar input[type="submit"],
+#changelist-search input[type="submit"] {
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+#changelist-filter {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+#changelist-filter h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+#changelist-filter h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 12px 0 6px;
+}
+
+#changelist-filter li {
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    font-size: 13px;
+}
+
+#changelist-filter li:hover {
+    background-color: var(--gray-50);
+}
+
+#changelist-filter li.selected {
+    background-color: rgba(26, 86, 219, 0.1);
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* -----------------------------------------------------------------------------
+   アクション
+   ----------------------------------------------------------------------------- */
+.actions {
+    background: #fff;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.actions select {
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    min-width: 200px;
+}
+
+.actions .button {
+    background-color: var(--gray-700);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* -----------------------------------------------------------------------------
+   メッセージ
+   ----------------------------------------------------------------------------- */
+.messagelist {
+    margin: 16px 0;
+}
+
+.messagelist li {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+.messagelist li.success {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+}
+
+.messagelist li.warning {
+    background-color: #fffbeb;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+}
+
+.messagelist li.error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+/* -----------------------------------------------------------------------------
+   ステータスバッジ
+   ----------------------------------------------------------------------------- */
+.badge,
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* -----------------------------------------------------------------------------
+   ダッシュボード
+   ----------------------------------------------------------------------------- */
+.dashboard-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.dashboard-section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 16px;
+}
+
+.quick-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    color: var(--gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    transition: all 0.15s ease;
+}
+
+.quick-link:hover {
+    background: #fff;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.quick-link svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+/* ヒントボックス */
+.hint-box {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+/* -----------------------------------------------------------------------------
+   削除確認
+   ----------------------------------------------------------------------------- */
+.delete-confirmation {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 20px 0;
+}
+
+.delete-confirmation h1 {
+    color: var(--danger);
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+/* -----------------------------------------------------------------------------
+   レスポンシブ
+   ----------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .nav-sidebar .nav-link {
+        padding: 12px 16px;
+    }
+    
+    #searchbar input[type="text"] {
+        min-width: 200px;
+    }
+    
+    .actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* -----------------------------------------------------------------------------
+   アニメーション
+   ----------------------------------------------------------------------------- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content-wrapper > .content {
+    animation: fadeIn 0.2s ease;
+}
+
+/* -----------------------------------------------------------------------------
+   ナビゲーション調整
+   ----------------------------------------------------------------------------- */
+.navbar {
+    box-shadow: var(--shadow-sm);
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 12px 0;
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    color: var(--primary);
+}
+
+/* ページネーション */
+.paginator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 16px;
+    justify-content: center;
+}
+
+.paginator a,
+.paginator span {
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    font-size: 13px;
+}
+
+.paginator a:hover {
+    background: var(--gray-100);
+}
+
+.paginator .this-page {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* =============================================================================
+   ダッシュボード専用スタイル
+   ============================================================================= */
+
+/* クイックスタートセクション */
+.quick-start-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.quick-start-section .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.quick-start-section .section-header svg {
+    color: var(--primary);
+}
+
+.quick-start-section .section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.quick-start-section .section-desc {
+    color: var(--gray-600);
+    margin-bottom: 20px;
+}
+
+.start-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.start-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.start-steps li:last-child {
+    border-bottom: none;
+}
+
+.step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content strong {
+    display: block;
+    color: var(--gray-800);
+    margin-bottom: 2px;
+}
+
+.step-content a,
+.step-content span {
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+.step-content a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.step-content a:hover {
+    text-decoration: underline;
+}
+
+/* ダッシュボードグリッド */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.dashboard-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.dashboard-card .card-header svg {
+    color: var(--gray-500);
+}
+
+.dashboard-card .card-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+/* クイックアクション */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    color: var(--gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s ease;
+}
+
+.action-btn svg {
+    color: var(--gray-400);
+}
+
+.action-btn:hover {
+    background: #fff;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.action-btn:hover svg {
+    color: var(--primary);
+}
+
+/* ヘルプリンク */
+.help-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help-links li {
+    margin-bottom: 8px;
+}
+
+.help-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    color: var(--gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s ease;
+}
+
+.help-links a svg {
+    color: var(--gray-400);
+}
+
+.help-links a:hover {
+    background: var(--gray-100);
+    color: var(--primary);
+}
+
+.help-links a:hover svg {
+    color: var(--primary);
+}
+
+/* ヒントセクション */
+.tips-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.tips-section .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tips-section .section-header svg {
+    color: var(--warning);
+}
+
+.tips-section .section-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 992px) {
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tip-card {
+    background: var(--gray-50);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.tip-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0 0 8px 0;
+}
+
+.tip-card p {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* サイドバーヘルプカード */
+.sidebar-help-card {
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.sidebar-help-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sidebar-help-header svg {
+    opacity: 0.8;
+}
+
+.sidebar-help-links {
+    padding: 8px;
+}
+
+.sidebar-help-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.sidebar-help-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.sidebar-help-links a svg {
+    opacity: 0.7;
+}
+
+/* =============================================================================
+   ガイドページ専用スタイル
+   ============================================================================= */
+
+.guide-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.guide-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 32px;
+}
+
+.guide-title svg {
+    color: var(--primary);
+}
+
+/* 目次 */
+.toc-section {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.toc-section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0 0 16px 0;
+}
+
+.toc-list {
+    margin: 0;
+    padding-left: 24px;
+}
+
+.toc-list li {
+    margin-bottom: 8px;
+}
+
+.toc-list a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.toc-list a:hover {
+    text-decoration: underline;
+}
+
+/* ガイドセクション */
+.guide-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.guide-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.section-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.guide-section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 24px 0 12px 0;
+}
+
+.guide-section h3:first-of-type {
+    margin-top: 0;
+}
+
+.step-list {
+    padding-left: 24px;
+    margin: 0;
+}
+
+.step-list li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.required-note {
+    color: var(--danger);
+}
+
+/* ボックス共通 */
+.info-box,
+.warning-box,
+.success-box,
+.danger-box {
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-top: 20px;
+}
+
+.info-box strong,
+.warning-box strong,
+.success-box strong,
+.danger-box strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.info-box p,
+.warning-box p,
+.success-box p,
+.danger-box p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.info-box {
+    background: #eff6ff;
+    border-left: 3px solid var(--primary);
+}
+
+.info-box strong {
+    color: var(--primary);
+}
+
+.warning-box {
+    background: #fffbeb;
+    border-left: 3px solid var(--warning);
+}
+
+.warning-box strong {
+    color: var(--warning);
+}
+
+.success-box {
+    background: #ecfdf5;
+    border-left: 3px solid var(--success);
+}
+
+.success-box strong {
+    color: var(--success);
+}
+
+.danger-box {
+    background: #fef2f2;
+    border-left: 3px solid var(--danger);
+}
+
+.danger-box strong {
+    color: var(--danger);
+}
+
+/* ステータステーブル */
+.status-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.status-table th,
+.status-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--gray-200);
+}
+
+.status-table th {
+    background: var(--gray-50);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.status-table td {
+    color: var(--gray-600);
+}
+
+/* FAQ */
+.faq-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.faq-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0 0 8px 0;
+}
+
+.faq-item p {
+    margin: 0;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+/* トラブルシューティング */
+.trouble-item {
+    margin-bottom: 20px;
+}
+
+.trouble-item:last-child {
+    margin-bottom: 0;
+}
+
+.trouble-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0 0 8px 0;
+}
+
+.trouble-item ul {
+    margin: 0;
+    padding: 12px 16px 12px 36px;
+    background: var(--gray-50);
+    border-radius: 6px;
+}
+
+.trouble-item li {
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.trouble-item li:last-child {
+    margin-bottom: 0;
+}
+
+/* 戻るボタン */
+.back-button-section {
+    text-align: center;
+    margin-top: 32px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.back-button:hover {
+    background: var(--primary-dark);
+    color: #fff;
+}
+
+/* -----------------------------------------------------------------------------
+   サイドバーテキスト表示修正
+   ----------------------------------------------------------------------------- */
+/* サイドバーのテキストを常に表示 */
+.nav-sidebar .nav-link p,
+.nav-sidebar .nav-treeview .nav-link p {
+    display: inline-block !important;
+    margin: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    font-size: 13px;
+}
+
+/* サイドバーヘッダーテキスト表示 */
+.nav-sidebar .nav-header {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* サイドバー閉じた状態でもテキスト非表示にしない（ホバー時に表示） */
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link p {
+    display: none !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-header {
+    display: none !important;
+}
+
+/* -----------------------------------------------------------------------------
+   履歴ボタンのスタイル
+   ----------------------------------------------------------------------------- */
+.object-tools a.historylink,
+.object-tools a[href*="history"] {
+    background-color: var(--gray-600) !important;
+    color: #fff !important;
+}
+
+.object-tools a.historylink:hover,
+.object-tools a[href*="history"]:hover {
+    background-color: var(--gray-700) !important;
+}
+
+/* -----------------------------------------------------------------------------
+   最近行った操作のレイアウト調整
+   ----------------------------------------------------------------------------- */
+.recent-actions {
+    width: 100%;
+}
+
+.recent-actions .module {
+    padding: 16px;
+}
+
+.recent-actions ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.recent-actions li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    gap: 8px;
+}
+
+.recent-actions li a {
+    flex: 1;
+    min-width: 200px;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.recent-actions .mini.quiet {
+    color: var(--gray-500);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* ダッシュボードの2カラムレイアウト調整 */
+#content-main .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+#content-main .col-lg-8,
+#content-main .col-lg-4 {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* -----------------------------------------------------------------------------
+   フィールドセットをデフォルトで開く
+   ----------------------------------------------------------------------------- */
+/* Jazzminのcollapse機能を上書き - 主要セクションは開いた状態に */
+fieldset.collapsed {
+    border: 1px solid var(--gray-200) !important;
+}
+
+fieldset.collapsed .form-row,
+fieldset.collapsed .field-box {
+    display: block !important;
+}
+
+/* -----------------------------------------------------------------------------
+   クイック追加セクション
+   ----------------------------------------------------------------------------- */
+.quick-add-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 24px 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.quick-add-section .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: var(--gray-800);
+}
+
+.quick-add-section .section-header svg {
+    color: var(--primary);
+}
+
+.quick-add-section .section-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.quick-add-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.quick-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    color: var(--gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.quick-add-btn:hover {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.quick-add-btn svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.quick-add-btn:hover svg {
+    opacity: 1;
+}
+
+/* -----------------------------------------------------------------------------
+   追加・編集画面の洗練されたデザイン
+   ----------------------------------------------------------------------------- */
+
+/* ページヘッダー */
+#content h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+/* コンテンツエリアの余白 */
+#content {
+    padding: 24px 32px;
+}
+
+/* 追加フォームのフレックスレイアウト修正 */
+.change-form .form-row {
+    display: block;
+}
+
+.change-form .form-row > div {
+    display: block;
+}
+
+/* フィールドラベルとインプットの関係性 */
+.form-row label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-row .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 日付選択ウィジェット */
+.datetimeshortcuts {
+    margin-left: 8px;
+}
+
+.datetimeshortcuts a {
+    color: var(--primary);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.datetimeshortcuts a:hover {
+    text-decoration: underline;
+}
+
+/* カレンダーアイコン */
+.calendarlink,
+.clocklink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+    background: var(--gray-100);
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    text-decoration: none;
+}
+
+.calendarlink:hover,
+.clocklink:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* Related Widget（ForeignKey選択） */
+.related-widget-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.related-widget-wrapper select {
+    flex: 1;
+}
+
+.related-widget-wrapper-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.related-widget-wrapper-link:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* Multiple Select（選手リストなど） */
+.selector {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.selector-available,
+.selector-chosen {
+    flex: 1;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.selector-available h2,
+.selector-chosen h2 {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 12px;
+    margin: 0;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-300);
+    color: var(--gray-700);
+}
+
+.selector select {
+    width: 100%;
+    min-height: 180px;
+    border: none;
+    border-radius: 0;
+    padding: 8px;
+}
+
+.selector-chooser {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 60px;
+}
+
+.selector-chooser a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.selector-chooser a:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* ファイルアップロード */
+.file-upload input[type="file"] {
+    padding: 8px;
+    background: var(--gray-50);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    cursor: pointer;
+    max-width: 500px;
+}
+
+.file-upload input[type="file"]:hover {
+    border-color: var(--primary);
+    background: #f8fafc;
+}
+
+/* 現在のファイル表示 */
+.file-upload .file-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 12px;
+    color: var(--gray-600);
+}
+
+/* クリアチェックボックス */
+.clearable-file-input label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Breadcrumb */
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: var(--gray-400);
+    padding: 0 8px;
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+/* 追加フォームの幅最適化 */
+@media (min-width: 992px) {
+    #content-main form {
+        max-width: 900px;
+    }
+    
+    .form-row input[type="text"],
+    .form-row input[type="email"],
+    .form-row input[type="url"],
+    .form-row input[type="tel"],
+    .form-row select {
+        max-width: 450px;
+    }
+    
+    .form-row textarea {
+        max-width: 650px;
+    }
+}
+
+/* 読み取り専用フィールドのスタイル */
+.readonly .vReadOnlyField,
+.form-row.field-readonly .readonly {
+    padding: 10px 14px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    display: inline-block;
+    min-width: 150px;
+}
+
+/* Boolean（チェックボックス）フィールド */
+.checkbox-row,
+.field-is_active,
+.field-is_staff,
+.field-is_superuser,
+.field-is_finished,
+.field-is_published {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-row label,
+.field-is_active label,
+.field-is_staff label,
+.field-is_superuser label,
+.field-is_finished label,
+.field-is_published label {
+    margin-bottom: 0;
+}
+
+/* JSONフィールド */
+.jsoneditor-wrapper,
+.json-widget {
+    max-width: 700px;
+}
+
+/* RichText（CKEditor等） */
+.cke_chrome,
+.django-ckeditor-widget {
+    max-width: 700px;
+    border-radius: var(--radius) !important;
+    overflow: hidden;
+}
+
+/* TimeField用の短い幅 */
+input.vTimeField {
+    max-width: 140px;
+}
+
+/* IntegerField・DecimalFieldの幅 */
+input.vIntegerField,
+input.vDecimalField,
+input[type="number"] {
+    max-width: 180px;
+}
+
+/* パスワードフィールド */
+#id_password,
+.field-password input {
+    max-width: 400px;
+}
+
+/* -----------------------------------------------------------------------------
+   Jazzminフォームグループ調整
+   ----------------------------------------------------------------------------- */
+
+/* フォームグループの間隔 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* セレクトボックスの調整 */
+.form-group select.form-control,
+.field-box select.form-control {
+    max-width: 500px;
+}
+
+/* 追加画面のコンテンツ幅制御 */
+.change-form #content-main {
+    max-width: 1000px;
+}
+
+/* フィールドセット内のフォーム行間隔 */
+fieldset .form-row + .form-row {
+    margin-top: 16px;
+}
+
+/* ラベルの縦揃え */
+.form-row > label {
+    min-width: 140px;
+    max-width: 200px;
+}
+
+/* 複数フィールドの横並び */
+.form-row.field-date.field-time,
+.form-row.field-start_date.field-end_date {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* 補助テキスト */
+.form-text,
+.text-muted {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 6px;
+}
+
+/* 必須フィールドマーク */
+.form-row.required label::after,
+.required .form-row label::after {
+    content: " *";
+    color: var(--danger);
+}
+
+/* インライン編集の追加ボタン */
+.inline-group .add-row td {
+    padding: 12px;
+    background: var(--gray-50);
+}
+
+/* 警告メッセージ */
+.messagelist {
+    padding: 0;
+    margin: 0 0 24px 0;
+    list-style: none;
+}
+
+.messagelist .success {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    color: #0369a1;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+}
+
+.messagelist .warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+}
+
+.messagelist .error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+}
+
+/* 送信ボタンエリアの固定 */
+@media (min-width: 768px) {
+    .submit-row {
+        position: sticky;
+        bottom: 0;
+        z-index: 100;
+    }
+}
+
+/* 管理リンクの見た目 */
+.change-list-object-tools,
+.object-tools {
+    margin-bottom: 16px;
+}
+
+.object-tools li {
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+.object-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.object-tools a:hover {
+    background: var(--primary-dark);
+}
+
+/* 履歴ボタン */
+.object-tools a.historylink {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.object-tools a.historylink:hover {
+    background: var(--gray-200);
+}
+
+/* メイン画面の余白 */
+.content-wrapper > .content {
+    padding: 16px 24px;
+}
+
+/* =============================================================================
+   ダッシュボード レイアウト修正
+   ============================================================================= */
+
+/* ダッシュボードの上部余白を削減（パンくずリスト・ヘッダー部分） */
+.content-header {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* パンくずリストのコンテナ */
+.content-header .container-fluid {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* パンくずリスト自体 */
+.content-header .breadcrumb {
+    margin-bottom: 0;
+    padding: 8px 0;
+}
+
+/* パンくずリストのol要素 */
+.content-header ol.breadcrumb {
+    margin: 0;
+    padding: 4px 0;
+}
+
+/* コンテンツエリアの上余白 */
+.content-wrapper > .content {
+    padding-top: 8px;
+}
+
+/* ダッシュボードのコンテンツメインの余白調整 */
+#content-main {
+    padding: 0;
+}
+
+/* サイドバーの余白調整（右側の余白を削減） */
+.main-sidebar {
+    width: 250px !important;
+}
+
+.main-sidebar ~ .content-wrapper {
+    margin-left: 250px;
+}
+
+/* サイドバー折りたたみ時 */
+.sidebar-collapse .main-sidebar {
+    width: 60px !important;
+}
+
+.sidebar-collapse .main-sidebar ~ .content-wrapper {
+    margin-left: 60px;
+}
+
+/* サイドメニューのモデル一覧の余白調整 */
+.nav-sidebar .nav-treeview {
+    padding-left: 0;
+}
+
+.nav-sidebar .nav-treeview .nav-link {
+    padding-left: 32px;
+}
+
+/* 右側の余白を削減 - コンテンツ幅を広げる */
+@media (min-width: 992px) {
+    .content-wrapper {
+        padding-right: 12px;
+    }
+    
+    .content-wrapper > .content {
+        padding-right: 16px;
+        padding-left: 16px;
+        max-width: 100%;
+    }
+}
+
+/* ダッシュボードのグリッドレイアウト最適化 */
+.dashboard-grid {
+    gap: 16px;
+}
+
+.quick-start-section {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.tips-section {
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+/* クイック追加セクションの余白調整 */
+.quick-add-section {
+    margin-bottom: 20px;
+}
+
+.quick-add-grid {
+    gap: 10px;
+}
+
+/* サイドバーのapp-listの余白 */
+.nav-sidebar > .nav-item > .nav-treeview {
+    margin-bottom: 8px;
+}
+
+/* モデルリストの余白詰め */
+.nav-sidebar .nav-item .nav-link {
+    padding: 8px 12px;
+    margin: 1px 8px;
+}
+
+/* content-headerの高さを小さく */
+.content-header h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* 標準のJazzminダッシュボード内容のスタイル調整 */
+.dashboard-column,
+#recent-actions-module {
+    margin-top: 16px;
+}
+
+/* 右側余白調整（ボディ全体） */
+body.sidebar-mini .content-wrapper,
+body.sidebar-mini.sidebar-collapse .content-wrapper {
+    margin-right: 0;
+}
+
+/* =============================================================================
+   インラインテーブル（種目編集など）の改善
+   ============================================================================= */
+
+/* インラインテーブルを横スクロール可能に */
+.inline-group {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.inline-group .tabular {
+    min-width: auto;
+}
+
+.inline-group table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.inline-group table th,
+.inline-group table td {
+    white-space: nowrap;
+    padding: 8px 12px;
+}
+
+/* インライン追加行をよりわかりやすく */
+.inline-group .add-row a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.inline-group .add-row a:hover {
+    background: var(--primary-dark);
+    color: white;
+}
+
+/* 空行（extra）のスタイル */
+.inline-group .empty-form,
+.inline-group .original {
+    background-color: var(--gray-50);
+}
+
+/* インライン内のselectをコンパクトに */
+.inline-group select {
+    min-width: 100px;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+/* インラインのチェックボックスを中央寄せ */
+.inline-group input[type="checkbox"] {
+    margin: 0 auto;
+    display: block;
+}
+
+/* 削除チェックボックス列を狭く */
+.inline-group .delete {
+    width: 50px;
+    text-align: center;
+}
+
+/* 種目インラインのフィールド幅調整 */
+.inline-group .field-distance select {
+    min-width: 80px;
+}
+
+.inline-group .field-gender select {
+    min-width: 80px;
+}
+
+.inline-group .field-is_ncg,
+.inline-group .field-is_active {
+    width: 80px;
+    text-align: center;
+}

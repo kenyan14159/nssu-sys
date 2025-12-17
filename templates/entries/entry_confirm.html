@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}エントリー確認{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-check-circle"></i> エントリー確認</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-list-check"></i> エントリー内容
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>種目</th>
+                            <th>選手</th>
+                            <th>申告タイム</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                        <tr>
+                            <td>{{ entry.race.name }}</td>
+                            <td>{{ entry.athlete.full_name }}</td>
+                            <td class="time-display">{{ entry.declared_time_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-receipt"></i> お支払い金額
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="display-6 text-primary">
+                        {{ total_amount|stringformat:",.0f" }}円
+                    </div>
+                    <small class="text-muted">{{ entries.count }}件 × {{ competition.entry_fee|stringformat:",.0f" }}円</small>
+                </div>
+                
+                <div class="alert alert-warning small">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    確定後のキャンセル・返金はできません
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check"></i> 確定して支払いへ進む
+                        </button>
+                        <a href="{% url 'entries:cart' competition_pk=competition.pk %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> 戻る
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

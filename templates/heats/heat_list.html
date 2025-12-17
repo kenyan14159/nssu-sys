@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ race.name }} 組編成{% endblock %}
+
+{% block extra_css %}
+<style>
+    .heat-card {
+        min-height: 300px;
+    }
+    .heat-card .card-body {
+        padding: 0;
+    }
+    .sortable-list {
+        min-height: 100px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .sortable-item {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+        cursor: grab;
+        background: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background 0.2s;
+    }
+    .sortable-item:hover {
+        background: #f7fafc;
+    }
+    .sortable-item.dragging {
+        opacity: 0.5;
+        cursor: grabbing;
+    }
+    .sortable-item.drag-over {
+        background: #ebf4ff;
+        border-top: 2px solid #2b6cb0;
+    }
+    .heat-card.drag-target {
+        border: 2px dashed #2b6cb0;
+    }
+    .sortable-item .bib-number {
+        font-weight: bold;
+        min-width: 24px;
+        text-align: center;
+        color: #2b6cb0;
+    }
+    .sortable-item .athlete-name {
+        flex: 1;
+    }
+    .sortable-item .org-name {
+        font-size: 0.75rem;
+        color: #718096;
+    }
+    .sortable-item .declared-time {
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 0.8rem;
+        color: #4a5568;
+    }
+    .sortable-item .drag-handle {
+        color: #a0aec0;
+        cursor: grab;
+    }
+    .sortable-item.dns {
+        background: #f7fafc;
+        color: #a0aec0;
+        text-decoration: line-through;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'heats:management' competition_pk=race.competition.pk %}">番組編成</a></li>
+            <li class="breadcrumb-item active">{{ race.name }}</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1><i class="bi bi-diagram-3"></i> {{ race.name }}</h1>
+        <div>
+            <a href="{% url 'reports:program_pdf' race_pk=race.pk %}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf"></i> プログラムPDF
+            </a>
+            <a href="{% url 'reports:startlist_csv' race_pk=race.pk %}" class="btn btn-outline-success">
+                <i class="bi bi-filetype-csv"></i> スタートリストCSV
+            </a>
+            <form action="{% url 'heats:generate' race_pk=race.pk %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" onclick="return confirm('組分けを（再）生成しますか？既存の編成は削除されます。')">
+                    <i class="bi bi-magic"></i> 自動組分け生成
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> 
+    <strong>ドラッグ&ドロップ操作:</strong> 選手をドラッグして別の組に移動できます。PM配置や大学ごとのバラつき調整にご利用ください。
+</div>
+
+{% if heats %}
+<div class="row" id="heats-container">
+    {% for heat in heats %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card heat-card" data-heat-id="{{ heat.pk }}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>{{ heat.heat_number }}組</strong>
+                    <span class="badge bg-secondary entry-count">{{ heat.entry_count }}名</span>
+                </span>
+                <div>
+                    {% if heat.is_finalized %}
+                        <span class="badge bg-success">確定</span>
+                    {% endif %}
+                    <a href="{% url 'heats:detail' pk=heat.pk %}" class="btn btn-sm btn-outline-primary" title="詳細編集">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="sortable-list" data-heat-id="{{ heat.pk }}">
+                    {% for assignment in heat.assignments.all %}
+                    <li class="sortable-item {% if assignment.status == 'dns' %}dns{% endif %}" 
+                        draggable="{% if not heat.is_finalized and assignment.status != 'dns' %}true{% else %}false{% endif %}"
+                        data-assignment-id="{{ assignment.pk }}">
+                        <span class="drag-handle" title="ドラッグして移動"><i class="bi bi-grip-vertical"></i></span>
+                        <span class="bib-number">{{ assignment.bib_number }}</span>
+                        <span class="athlete-name">
+                            {{ assignment.entry.athlete.full_name }}
+                            {% if assignment.status == 'dns' %}<span class="badge bg-danger">DNS</span>{% endif %}
+                        </span>
+                        <span class="org-name">{{ assignment.entry.athlete.organization.short_name|default:"" }}</span>
+                        <span class="declared-time">{{ assignment.entry.declared_time_display }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="text-muted text-center py-3">選手なし</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{% url 'reports:rollcall_pdf' heat_pk=heat.pk %}" class="btn btn-sm btn-outline-danger" title="点呼用PDF">
+                    <i class="bi bi-file-pdf"></i> 点呼PDF
+                </a>
+                {% if not heat.is_finalized %}
+                <form action="{% url 'heats:finalize' pk=heat.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('この組を確定しますか？確定後は移動できなくなります。')">
+                        <i class="bi bi-check-lg"></i> 確定
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-diagram-3 display-1 text-muted"></i>
+        <p class="mt-3 text-muted">組が生成されていません</p>
+        <form action="{% url 'heats:generate' race_pk=race.pk %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-magic"></i> 自動組分けを生成
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let draggedItem = null;
+    let sourceList = null;
+    
+    // CSRFトークン取得関数
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // ドラッグ開始
+    document.querySelectorAll('.sortable-item[draggable="true"]').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            sourceList = this.parentElement;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        });
+        
+        item.addEventListener('dragend', function(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.heat-card').forEach(card => {
+                card.classList.remove('drag-target');
+            });
+            document.querySelectorAll('.sortable-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        });
+    });
+    
+    // ドロップ先の設定
+    document.querySelectorAll('.sortable-list').forEach(list => {
+        list.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            this.closest('.heat-card').classList.add('drag-target');
+        });
+        
+        list.addEventListener('dragleave', function(e) {
+            this.closest('.heat-card').classList.remove('drag-target');
+        });
+        
+        list.addEventListener('drop', function(e) {
+            e.preventDefault();
+            
+            if (!draggedItem) return;
+            
+            const targetList = this;
+            const targetHeatId = targetList.dataset.heatId;
+            const assignmentId = draggedItem.dataset.assignmentId;
+            
+            // 同じリスト内なら何もしない（並び替えは未実装）
+            if (sourceList === targetList) {
+                return;
+            }
+            
+            // API呼び出しで移動
+            const csrfToken = getCookie('csrftoken');
+            
+            fetch('{% url "heats:move" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `assignment_id=${assignmentId}&target_heat_id=${targetHeatId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // DOM更新
+                    targetList.appendChild(draggedItem);
+                    
+                    // 人数カウント更新
+                    updateEntryCounts();
+                    
+                    // 腰番号の更新（簡易版：サーバー側で振り直される）
+                    updateBibNumbers(sourceList);
+                    updateBibNumbers(targetList);
+                } else {
+                    alert('移動に失敗しました: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('エラーが発生しました');
+                console.error(error);
+            });
+            
+            this.closest('.heat-card').classList.remove('drag-target');
+        });
+    });
+    
+    function updateEntryCounts() {
+        document.querySelectorAll('.sortable-list').forEach(list => {
+            const count = list.querySelectorAll('.sortable-item:not(.dns)').length;
+            const card = list.closest('.heat-card');
+            const badge = card.querySelector('.entry-count');
+            if (badge) {
+                badge.textContent = count + '名';
+            }
+        });
+    }
+    
+    function updateBibNumbers(list) {
+        let bibNumber = 1;
+        list.querySelectorAll('.sortable-item').forEach(item => {
+            const bibSpan = item.querySelector('.bib-number');
+            if (bibSpan) {
+                bibSpan.textContent = bibNumber++;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

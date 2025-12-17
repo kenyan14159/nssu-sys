@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block title %}新規登録{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-plus"></i> 新規登録</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'accounts:register' %}" id="registerForm">
+                        {% csrf_token %}
+                        
+                        <!-- 登録タイプ選択 -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">登録タイプ</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="registration_type" id="type_org" value="organization">
+                                <label class="btn btn-outline-primary" for="type_org">
+                                    <i class="bi bi-building"></i> 団体（大学・クラブ）
+                                </label>
+                                <input type="radio" class="btn-check" name="registration_type" id="type_individual" value="individual" checked>
+                                <label class="btn btn-outline-primary" for="type_individual">
+                                    <i class="bi bi-person"></i> 個人参加
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- フォームエラー表示 -->
+                        {% if user_form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in user_form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <hr>
+                        
+                        <!-- アカウント情報 -->
+                        <h6 class="mb-3"><i class="bi bi-key"></i> アカウント情報</h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_email" class="form-label">ログインID（メールアドレス） <span class="text-danger">*</span></label>
+                                {{ user_form.email }}
+                                {% if user_form.email.errors %}
+                                    <div class="text-danger small">{{ user_form.email.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">このメールアドレスがログインIDになります</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password1" class="form-label">パスワード <span class="text-danger">*</span></label>
+                                {{ user_form.password1 }}
+                                {% if user_form.password1.errors %}
+                                    <div class="text-danger small">{{ user_form.password1.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">8文字以上で、数字を含めてください</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password2" class="form-label">パスワード（確認） <span class="text-danger">*</span></label>
+                                {{ user_form.password2 }}
+                                {% if user_form.password2.errors %}
+                                    <div class="text-danger small">{{ user_form.password2.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- 個人参加者情報（個人登録時のみ） -->
+                        <div id="individual_fields">
+                            <h6 class="mb-3"><i class="bi bi-person-badge"></i> ご本人情報</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_full_name" class="form-label">氏名 <span class="text-danger">*</span></label>
+                                    {{ user_form.full_name }}
+                                    {% if user_form.full_name.errors %}
+                                        <div class="text-danger small">{{ user_form.full_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_full_name_kana" class="form-label">フリガナ <span class="text-danger">*</span></label>
+                                    {{ user_form.full_name_kana }}
+                                    {% if user_form.full_name_kana.errors %}
+                                        <div class="text-danger small">{{ user_form.full_name_kana.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_phone" class="form-label">電話番号 <span class="text-danger">*</span></label>
+                                    {{ user_form.phone }}
+                                    {% if user_form.phone.errors %}
+                                        <div class="text-danger small">{{ user_form.phone.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3" id="affiliation_field">
+                                    <label for="id_affiliation_name" class="form-label">所属団体略称</label>
+                                    {{ user_form.affiliation_name }}
+                                    {% if user_form.affiliation_name.errors %}
+                                        <div class="text-danger small">{{ user_form.affiliation_name.errors.0 }}</div>
+                                    {% endif %}
+                                    <div class="form-text">プログラム等に表示される団体名</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 団体情報（団体登録時のみ） -->
+                        <div id="org_fields">
+                            <hr>
+                            <h6 class="mb-3"><i class="bi bi-person-badge"></i> ご担当者情報（アカウント作成者）</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">氏名 <span class="text-danger">*</span></label>
+                                    <input type="text" name="full_name_org" id="id_full_name_org" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">フリガナ <span class="text-danger">*</span></label>
+                                    <input type="text" name="full_name_kana_org" id="id_full_name_kana_org" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">電話番号 <span class="text-danger">*</span></label>
+                                    <input type="text" name="phone_org" id="id_phone_org" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <h6 class="mb-3"><i class="bi bi-building"></i> 団体情報</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_organization_type" class="form-label">団体分類 <span class="text-danger">*</span></label>
+                                    {{ user_form.organization_type }}
+                                    {% if user_form.organization_type.errors %}
+                                        <div class="text-danger small">{{ user_form.organization_type.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_name" class="form-label">団体名 <span class="text-danger">*</span></label>
+                                    {{ org_form.name }}
+                                    {% if org_form.name.errors %}
+                                        <div class="text-danger small">{{ org_form.name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_name_kana" class="form-label">団体名（フリガナ） <span class="text-danger">*</span></label>
+                                    {{ org_form.name_kana }}
+                                    {% if org_form.name_kana.errors %}
+                                        <div class="text-danger small">{{ org_form.name_kana.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_short_name" class="form-label">略称</label>
+                                    {{ org_form.short_name }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_jaaf_code" class="form-label">陸連登録コード</label>
+                                    {{ org_form.jaaf_code }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_coach_name" class="form-label">監督名</label>
+                                    {{ user_form.coach_name }}
+                                    {% if user_form.coach_name.errors %}
+                                        <div class="text-danger small">{{ user_form.coach_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_contact_person" class="form-label">連絡責任者名</label>
+                                    {{ user_form.contact_person }}
+                                    {% if user_form.contact_person.errors %}
+                                        <div class="text-danger small">{{ user_form.contact_person.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_representative_name" class="form-label">代表者氏名 <span class="text-danger">*</span></label>
+                                    {{ org_form.representative_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_representative_email" class="form-label">代表者メール <span class="text-danger">*</span></label>
+                                    {{ org_form.representative_email }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_representative_phone" class="form-label">代表者電話 <span class="text-danger">*</span></label>
+                                    {{ org_form.representative_phone }}
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="id_postal_code" class="form-label">郵便番号</label>
+                                    {{ user_form.postal_code }}
+                                    {% if user_form.postal_code.errors %}
+                                        <div class="text-danger small">{{ user_form.postal_code.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label for="id_address" class="form-label">住所</label>
+                                    {{ user_form.address }}
+                                    {% if user_form.address.errors %}
+                                        <div class="text-danger small">{{ user_form.address.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> 登録する
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <span class="text-muted">既にアカウントをお持ちの方は</span>
+                    <a href="{% url 'accounts:login' %}">ログイン</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orgFields = document.getElementById('org_fields');
+    const individualFields = document.getElementById('individual_fields');
+    const typeOrg = document.getElementById('type_org');
+    const typeIndividual = document.getElementById('type_individual');
+    const form = document.getElementById('registerForm');
+    
+    // 団体フィールドの入力要素を取得
+    const orgInputs = orgFields.querySelectorAll('input, select, textarea');
+    // 個人フィールドの入力要素を取得
+    const individualInputs = individualFields.querySelectorAll('input, select, textarea');
+    
+    function toggleFields() {
+        if (typeOrg.checked) {
+            // 団体登録モード
+            orgFields.style.display = 'block';
+            individualFields.style.display = 'none';
+            // 団体フィールドを有効化
+            orgInputs.forEach(function(input) {
+                input.disabled = false;
+            });
+            // 個人フィールドを無効化
+            individualInputs.forEach(function(input) {
+                input.disabled = true;
+            });
+        } else {
+            // 個人登録モード
+            orgFields.style.display = 'none';
+            individualFields.style.display = 'block';
+            // 団体フィールドを無効化
+            orgInputs.forEach(function(input) {
+                input.disabled = true;
+            });
+            // 個人フィールドを有効化
+            individualInputs.forEach(function(input) {
+                input.disabled = false;
+            });
+        }
+    }
+    
+    typeOrg.addEventListener('change', toggleFields);
+    typeIndividual.addEventListener('change', toggleFields);
+    
+    // 初期状態を設定
+    toggleFields();
+});
+</script>
+{% endblock %}

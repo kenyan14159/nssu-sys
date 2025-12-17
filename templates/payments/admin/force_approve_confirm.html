@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}強制承認確認{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'payments:admin_list' %}">入金管理</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'payments:force_approve_search' %}">強制承認</a></li>
+            <li class="breadcrumb-item active">確認</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-shield-exclamation text-danger"></i> 強制承認確認</h1>
+</div>
+
+<div class="alert alert-danger">
+    <strong><i class="bi bi-exclamation-triangle"></i> 警告：</strong>
+    この操作は記録されます。振込を確認した上で承認してください。
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">承認対象</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th style="width: 30%">団体名</th>
+                <td>{{ entry_group.organization.name|default:"個人" }}</td>
+            </tr>
+            <tr>
+                <th>大会</th>
+                <td>{{ entry_group.competition.name }}</td>
+            </tr>
+            <tr>
+                <th>エントリー数</th>
+                <td>{{ entry_group.entries.count }}件</td>
+            </tr>
+            <tr>
+                <th>合計金額</th>
+                <td class="fw-bold text-danger">{{ entry_group.total_amount|default:"-" }}円</td>
+            </tr>
+            <tr>
+                <th>現在のステータス</th>
+                <td>
+                    <span class="badge bg-warning text-dark">{{ entry_group.get_status_display }}</span>
+                </td>
+            </tr>
+        </table>
+        
+        <h6>エントリー選手一覧</h6>
+        <ul class="list-group">
+            {% for entry in entry_group.entries.all %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ entry.athlete.full_name }}</span>
+                <span class="text-muted">{{ entry.race.name }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-footer">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="note" class="form-label">承認理由</label>
+                <input type="text" name="note" id="note" class="form-control" 
+                       value="当日現場確認" placeholder="例: 当日スマホ振込確認">
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'payments:force_approve_search' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> 戻る
+                </a>
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="bi bi-shield-check"></i> 強制承認を実行
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

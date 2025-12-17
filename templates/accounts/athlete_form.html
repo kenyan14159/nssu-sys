@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-person-plus"></i> {{ title }}</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> 選手情報</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning mb-4">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>注意:</strong> 登録陸協・JAAF ID の記載がないと公認申請ができません。必ず記入してください。
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h6 class="mb-3 text-primary"><i class="bi bi-card-text"></i> 氏名（漢字）</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name" class="form-label">姓（漢字） <span class="text-danger">*</span></label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name" class="form-label">名（漢字） <span class="text-danger">*</span></label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h6 class="mb-3 text-primary"><i class="bi bi-card-text"></i> 氏名（カナ）</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name_kana" class="form-label">姓（カナ） <span class="text-danger">*</span></label>
+                            {{ form.last_name_kana }}
+                            {% if form.last_name_kana.errors %}
+                                <div class="text-danger small">{{ form.last_name_kana.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name_kana" class="form-label">名（カナ） <span class="text-danger">*</span></label>
+                            {{ form.first_name_kana }}
+                            {% if form.first_name_kana.errors %}
+                                <div class="text-danger small">{{ form.first_name_kana.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h6 class="mb-3 text-primary"><i class="bi bi-translate"></i> 氏名（ローマ字）</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name_en" class="form-label">姓（ローマ字）</label>
+                            {{ form.last_name_en }}
+                            {% if form.last_name_en.errors %}
+                                <div class="text-danger small">{{ form.last_name_en.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">姓は大文字で入力（例: YAMADA）</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name_en" class="form-label">名（ローマ字）</label>
+                            {{ form.first_name_en }}
+                            {% if form.first_name_en.errors %}
+                                <div class="text-danger small">{{ form.first_name_en.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">名は先頭のみ大文字（例: Taro）</div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3 text-primary"><i class="bi bi-person-vcard"></i> 基本情報</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_gender" class="form-label">性別 <span class="text-danger">*</span></label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}
+                                <div class="text-danger small">{{ form.gender.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_birth_date" class="form-label">生年月日 <span class="text-danger">*</span></label>
+                            {{ form.birth_date }}
+                            {% if form.birth_date.errors %}
+                                <div class="text-danger small">{{ form.birth_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_grade" class="form-label">学年</label>
+                            {{ form.grade }}
+                            {% if form.grade.errors %}
+                                <div class="text-danger small">{{ form.grade.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">高校生・大学生は記入</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_nationality" class="form-label">国籍 <span class="text-danger">*</span></label>
+                            {{ form.nationality }}
+                            {% if form.nationality.errors %}
+                                <div class="text-danger small">{{ form.nationality.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3 text-primary"><i class="bi bi-award"></i> 陸連登録情報（必須）</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_registered_pref" class="form-label">登録陸協 <span class="text-danger">*</span></label>
+                            {{ form.registered_pref }}
+                            {% if form.registered_pref.errors %}
+                                <div class="text-danger small">{{ form.registered_pref.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_jaaf_id" class="form-label">JAAF ID <span class="text-danger">*</span></label>
+                            {{ form.jaaf_id }}
+                            {% if form.jaaf_id.errors %}
+                                <div class="text-danger small">{{ form.jaaf_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> 保存
+                        </button>
+                        <a href="{% url 'accounts:athlete_list' %}" class="btn btn-outline-secondary">キャンセル</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-question-circle"></i> 入力について</h6>
+            </div>
+            <div class="card-body small">
+                <p><strong>登録陸協・JAAF ID</strong></p>
+                <p class="text-muted">公認記録の申請に必須となります。陸連に登録している都道府県陸協と登録番号を正確に入力してください。</p>
+                
+                <p><strong>ローマ字氏名</strong></p>
+                <p class="text-muted">国際大会への参加やWAランキングへの申請時に使用されます。</p>
+                
+                <p><strong>学年</strong></p>
+                <p class="text-muted">高校生・大学生・大学院生の方は学年を選択してください。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

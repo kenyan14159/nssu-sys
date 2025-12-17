@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日体大長距離競技会</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --nit-primary: #1a365d;
+            --nit-accent: #2b6cb0;
+        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; }
+        .hero { background: var(--nit-primary); color: white; padding: 60px 0; }
+        .section-title { border-bottom: 3px solid var(--nit-accent); padding-bottom: 10px; margin-bottom: 25px; }
+        .schedule-item { border-left: 4px solid var(--nit-accent); padding-left: 15px; margin-bottom: 20px; }
+        .schedule-month { font-weight: bold; color: var(--nit-primary); }
+        .ncg-badge { background: #ecc94b; color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; }
+        .news-important { color: #c53030; font-weight: bold; }
+        .venue-alert { background: #fff5f5; border: 1px solid #fc8181; padding: 8px 12px; border-radius: 5px; font-size: 0.85rem; color: #c53030; margin-top: 8px; }
+        footer { background: var(--nit-primary); color: white; }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="h2 mb-2">日体大長距離競技会</h1>
+            <p class="small mb-3">Nippon Sports Science University Long-Distance Running Competition</p>
+            <p class="mb-4">2025年度 年間8回開催</p>
+            <a href="{% url 'accounts:login' %}" class="btn btn-light">
+                <i class="bi bi-box-arrow-in-right"></i> エントリーサイトへ
+            </a>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <!-- お知らせ -->
+        {% if news_items %}
+        <section class="mb-5">
+            <h2 class="h5 section-title"><i class="bi bi-megaphone"></i> お知らせ</h2>
+            <ul class="list-unstyled">
+                {% for item in news_items %}
+                <li class="mb-2 d-flex justify-content-between">
+                    <a href="{% url 'news:detail' pk=item.pk %}" class="text-decoration-none {% if item.is_important %}news-important{% endif %}">
+                        {% if item.is_important %}<i class="bi bi-exclamation-triangle-fill"></i> {% endif %}
+                        {{ item.title }}
+                    </a>
+                    <small class="text-muted">{{ item.published_at|date:"Y/m/d" }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'news:list' %}" class="small">すべて見る →</a>
+        </section>
+        {% endif %}
+
+        <!-- 日程 -->
+        <section class="mb-5">
+            <h2 class="h5 section-title"><i class="bi bi-calendar3"></i> 2025年度 競技会日程</h2>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">3月</span> 29日(土)～30日(日)<br>
+                第319回 日本体育大学長距離競技会
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">4月</span> 26日(土)～27日(日)<br>
+                第320回 日本体育大学長距離競技会 <span class="ncg-badge">第14回NCG</span>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">5月</span> 31日(土)～6月1日(日)<br>
+                第321回 日本体育大学長距離競技会 <span class="ncg-badge">第15回NCG</span>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">6月</span> 14日(土)～15日(日)<br>
+                第322回 日本体育大学長距離競技会 <span class="ncg-badge">第16回NCG</span>
+                <div class="venue-alert"><i class="bi bi-exclamation-triangle"></i> 改修工事の関係で日程変更(4/1)</div>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">10月</span> 5日(日)<br>
+                第323回 日本体育大学長距離競技会 <span class="ncg-badge">第17回NCG</span>
+                <div class="venue-alert">
+                    <i class="bi bi-geo-alt"></i> <strong>慶應義塾大学日吉陸上競技場</strong>（会場変更・駐車場なし）
+                </div>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">11月</span> 15日(土)～16日(日)<br>
+                第324回 日本体育大学長距離競技会 <span class="ncg-badge">第18回NCG</span>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">11月</span> 29日(土)～30日(日)<br>
+                第325回 日本体育大学長距離競技会 <span class="ncg-badge">第19回NCG</span>
+            </div>
+            
+            <div class="schedule-item">
+                <span class="schedule-month">12月</span> 20日(土)<br>
+                第26回 女子長距離競技会
+            </div>
+            
+            <p class="small text-muted mt-3">
+                ※NCGはWRk申請対象となります。NCGと長距離競技会は別大会です。
+            </p>
+        </section>
+
+        <div class="row">
+            <!-- 開催場所 -->
+            <div class="col-md-6 mb-4">
+                <h2 class="h5 section-title"><i class="bi bi-geo-alt"></i> 開催場所</h2>
+                <p>
+                    <strong>日本体育大学 健志台キャンパス 陸上競技場</strong><br>
+                    〒227-0033 神奈川県横浜市青葉区鴨志田町1221-1
+                </p>
+            </div>
+            
+            <!-- 事務局 -->
+            <div class="col-md-6 mb-4">
+                <h2 class="h5 section-title"><i class="bi bi-building"></i> 事務局</h2>
+                <p>
+                    長距離競技会事務局<br>
+                    〒227-0035 神奈川県横浜市青葉区すみよし台30-14<br>
+                    TEL: 045-962-0520
+                </p>
+            </div>
+        </div>
+
+        <!-- 速報・リンク -->
+        <section class="mb-5">
+            <h2 class="h5 section-title"><i class="bi bi-link-45deg"></i> リンク</h2>
+            <ul>
+                <li><a href="https://twitter.com/nittai_e" target="_blank">公式X（Twitter）@nittai_e</a> - 速報はこちら</li>
+                <li><a href="{% url 'accounts:login' %}">団体登録・エントリーサイト</a></li>
+            </ul>
+        </section>
+
+        <!-- 競技会資料 -->
+        <section class="mb-5">
+            <h2 class="h5 section-title"><i class="bi bi-file-earmark-text"></i> 競技会資料</h2>
+            <ul>
+                <li><a href="#">競技会注意事項</a></li>
+                <li><a href="#">開催予定種目</a></li>
+                <li><a href="#">お振込みに関して</a></li>
+            </ul>
+        </section>
+
+        <!-- 取材申請 -->
+        <section class="mb-5">
+            <h2 class="h5 section-title"><i class="bi bi-camera"></i> 取材申請について</h2>
+            <ul>
+                <li><a href="#">取材申請について</a></li>
+                <li><a href="#">取材申請ファイル</a></li>
+            </ul>
+        </section>
+
+        <!-- お問い合わせ -->
+        <section>
+            <h2 class="h5 section-title"><i class="bi bi-envelope"></i> お問い合わせ</h2>
+            <p>
+                <a href="mailto:nittaidai-ekiden@outlook.jp">nittaidai-ekiden@outlook.jp</a>
+            </p>
+        </section>
+    </main>
+
+    <!-- フッター -->
+    <footer class="py-4 text-center">
+        <small>&copy; 2025 日本体育大学陸上競技部</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

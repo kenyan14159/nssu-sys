@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} - 大会選択{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="{{ page_icon }}"></i> {{ page_title }}</h1>
+    <p class="text-muted mb-0">大会を選択してください</p>
+</div>
+
+<div class="card admin-select-card">
+    <div class="card-header">
+        <i class="bi bi-calendar-event"></i> 大会一覧
+    </div>
+    <div class="list-group list-group-flush">
+        {% for comp in competitions %}
+        <a href="{% if action_type == 'heats' %}{% url 'heats:management' competition_pk=comp.pk %}{% elif action_type == 'reports' %}{% url 'reports:index' competition_pk=comp.pk %}{% elif action_type == 'checkin' %}{% url 'heats:checkin_search' competition_pk=comp.pk %}{% endif %}" 
+           class="list-group-item list-group-item-action admin-select-item">
+            <div class="admin-select-content">
+                <div class="admin-select-main">
+                    <h6 class="admin-select-title">{{ comp.name }}</h6>
+                    <div class="admin-select-meta">
+                        <span class="admin-select-meta-item">
+                            <i class="bi bi-calendar3"></i>
+                            {{ comp.event_date|date:"Y年n月j日" }}
+                        </span>
+                        <span class="admin-select-meta-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <span class="admin-select-venue">{{ comp.venue }}</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="admin-select-action">
+                    {% if comp.can_entry %}
+                        <span class="badge bg-success">受付中</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ comp.entry_status }}</span>
+                    {% endif %}
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="list-group-item text-center text-muted py-4">
+            公開中の大会がありません
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

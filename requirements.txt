@@ -1,0 +1,51 @@
+# Django Core
+Django>=4.2,<5.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+
+# Admin UI
+django-jazzmin>=3.0.0
+
+# Database
+psycopg2-binary>=2.9.9
+dj-database-url>=2.1.0
+
+# Image Processing
+Pillow>=10.1.0
+
+# PDF Generation
+reportlab>=4.0.0
+
+# Data Processing
+pandas>=2.1.0
+openpyxl>=3.1.0
+
+# Production Server
+gunicorn>=21.2.0
+
+# Environment Variables
+python-decouple>=3.8
+
+# Whitenoise for Static Files
+whitenoise>=6.6.0
+
+# Date/Time Utilities
+python-dateutil>=2.8.2
+
+# Audit Logging
+django-auditlog>=2.3.0
+
+# Rate Limiting (Security)
+django-ratelimit>=4.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-django>=4.5.0
+pytest-cov>=4.1.0
+factory-boy>=3.3.0
+
+# Development Tools
+ruff>=0.1.0
+pre-commit>=3.5.0
+bandit>=1.7.0
+pip-audit>=2.6.0

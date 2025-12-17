@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}エントリー詳細{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-info-circle"></i> エントリー詳細</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 30%;">大会</th>
+                        <td>{{ entry.race.competition.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>種目</th>
+                        <td>{{ entry.race.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>選手</th>
+                        <td>{{ entry.athlete.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>所属</th>
+                        <td>{{ entry.athlete.organization.name|default:"個人" }}</td>
+                    </tr>
+                    <tr>
+                        <th>申告タイム</th>
+                        <td class="time-display fs-4">{{ entry.declared_time_display }}</td>
+                    </tr>
+                    {% if entry.personal_best %}
+                    <tr>
+                        <th>自己ベスト</th>
+                        <td class="time-display">{{ entry.personal_best_display }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th>状態</th>
+                        <td>
+                            {% if entry.status == 'confirmed' %}
+                                <span class="badge badge-confirmed fs-6">確定</span>
+                            {% elif entry.status == 'pending' %}
+                                <span class="badge badge-pending fs-6">入金待ち</span>
+                            {% elif entry.status == 'payment_uploaded' %}
+                                <span class="badge bg-info fs-6">確認中</span>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6">{{ entry.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>申込日時</th>
+                        <td>{{ entry.created_at|date:"Y年n月j日 H:i" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
