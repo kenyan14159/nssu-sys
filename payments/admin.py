@@ -8,7 +8,6 @@ import csv
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 
@@ -24,7 +23,10 @@ class PaymentAdminForm(forms.ModelForm):
     
     class Meta:
         model = Payment
-        fields = '__all__'
+        fields = [
+            'entry_group', 'receipt_image', 'payment_date', 'payment_amount',
+            'payer_name', 'status', 'review_note', 'reviewed_by', 'reviewed_at'
+        ]
         widgets = {
             'payment_amount': forms.NumberInput(attrs={'step': '2000', 'min': '0'}),
         }

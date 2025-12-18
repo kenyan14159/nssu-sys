@@ -108,7 +108,6 @@ def payment_status(request, entry_group_pk):
 def payment_list(request):
     """入金確認一覧（管理者用）"""
     from django.utils import timezone
-    from datetime import timedelta
     
     status_filter = request.GET.get('status', 'pending')
     
@@ -290,6 +289,7 @@ def parking_permit_download(request, parking_request_pk):
 def parking_request_view(request, competition_pk):
     """駐車場申請・確認"""
     from competitions.models import Competition
+
     from .forms import ParkingRequestForm
     
     competition = get_object_or_404(Competition, pk=competition_pk)
