@@ -26,7 +26,8 @@
         <div class="card mb-4">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M12 16v-4"></path>
                         <path d="M12 8h.01"></path>
@@ -38,7 +39,8 @@
                 <table class="table table-borderless competition-info-table">
                     <tr>
                         <th>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -50,7 +52,8 @@
                     </tr>
                     <tr>
                         <th>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
@@ -60,7 +63,8 @@
                     </tr>
                     <tr>
                         <th>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <line x1="12" y1="1" x2="12" y2="23"></line>
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                             </svg>
@@ -70,14 +74,15 @@
                     </tr>
                     <tr>
                         <th>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
                             エントリー期間
                         </th>
                         <td>
-                            {{ competition.entry_start_at|date:"n月j日 H:i" }} ～ 
+                            {{ competition.entry_start_at|date:"n月j日 H:i" }} ～
                             {{ competition.entry_end_at|date:"n月j日 H:i" }}
                         </td>
                     </tr>
@@ -85,19 +90,21 @@
                         <th>状態</th>
                         <td>
                             {% if competition.can_entry %}
-                                <span class="badge-entry-open" style="font-size: 0.9rem;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    エントリー受付中
-                                </span>
+                            <span class="badge-entry-open" style="font-size: 0.9rem;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                エントリー受付中
+                            </span>
                             {% else %}
-                                <span class="badge-entry-closed" style="font-size: 0.9rem;">{{ competition.entry_status }}</span>
+                            <span class="badge-entry-closed" style="font-size: 0.9rem;">{{ competition.entry_status
+                                }}</span>
                             {% endif %}
                         </td>
                     </tr>
                 </table>
-                
+
                 {% if competition.description %}
                 <div class="competition-description">
                     {{ competition.description|linebreaks }}
@@ -105,12 +112,13 @@
                 {% endif %}
             </div>
         </div>
-        
+
         <!-- 種目一覧 -->
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <line x1="8" y1="6" x2="21" y2="6"></line>
                         <line x1="8" y1="12" x2="21" y2="12"></line>
                         <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -118,53 +126,102 @@
                         <line x1="3" y1="12" x2="3.01" y2="12"></line>
                         <line x1="3" y1="18" x2="3.01" y2="18"></line>
                     </svg>
-                    種目一覧
+                    種目一覧 <span class="badge bg-secondary">{{ races|length }}種目</span>
                 </span>
-                {% if competition.can_entry %}
-                <a href="{% url 'entries:cart' competition_pk=competition.pk %}" class="btn btn-sm btn-primary">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="8.5" cy="7" r="4"></circle>
-                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                    </svg>
-                    エントリー確認・申込
-                </a>
-                {% endif %}
+                <div class="d-flex gap-2 align-items-center">
+                    <!-- フィルタボタン -->
+                    <div class="btn-group btn-group-sm" role="group" aria-label="性別フィルタ">
+                        <button type="button" class="btn btn-outline-secondary active" data-filter="all">すべて</button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="M">
+                            <i class="bi bi-gender-male"></i> 男子
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-filter="F">
+                            <i class="bi bi-gender-female"></i> 女子
+                        </button>
+                    </div>
+                    {% if competition.can_entry %}
+                    <a href="{% url 'entries:cart' competition_pk=competition.pk %}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-person-plus"></i> エントリー確認・申込
+                    </a>
+                    {% endif %}
+                </div>
             </div>
             <div class="table-responsive">
-                <table class="table race-table mb-0">
+                <table class="table race-table mb-0" id="raceTable">
                     <thead>
                         <tr>
+                            <th style="width: 80px;">開始時刻</th>
+                            <th style="width: 80px;">招集時刻</th>
                             <th>種目</th>
                             <th>エントリー数</th>
-                            <th>開始予定</th>
+                            <th>組数</th>
+                            <th>状況</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for race in races %}
-                        <tr>
+                        <tr data-gender="{{ race.gender }}">
                             <td>
-                                <span class="race-name">{{ race.name }}</span>
+                                {% if race.scheduled_start_time %}
+                                <span class="time-display fs-5 fw-bold text-primary">{{
+                                    race.scheduled_start_time|time:"H:i" }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if race.call_time %}
+                                <span class="text-muted">{{ race.call_time|time:"H:i" }}</span>
+                                {% elif race.scheduled_start_time %}
+                                <span class="text-muted small">{{ race.scheduled_start_time|time:"H:i" }}の20分前</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if race.gender == 'M' %}
+                                    <i class="bi bi-gender-male text-primary" title="男子"></i>
+                                    {% elif race.gender == 'F' %}
+                                    <i class="bi bi-gender-female text-danger" title="女子"></i>
+                                    {% else %}
+                                    <i class="bi bi-people text-secondary" title="混合"></i>
+                                    {% endif %}
+                                    <span class="race-name">{{ race.name }}</span>
+                                    {% if race.is_ncg %}
+                                    <span class="badge bg-warning text-dark" title="NITTAI CHALLENGE GAMES">NCG</span>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td class="race-count">
                                 {{ race.confirmed_count }}名
                                 {% if race.max_entries %}
-                                    <span class="race-capacity">/ {{ race.max_entries }}名</span>
+                                <span class="race-capacity">/ {{ race.max_entries }}名</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if race.scheduled_start_time %}
-                                    <span class="time-display">{{ race.scheduled_start_time|time:"H:i" }}</span>
+                                {% with heat_count=race.heats.count %}
+                                {% if heat_count > 0 %}
+                                <span class="badge bg-info">{{ heat_count }}組</span>
                                 {% else %}
-                                    <span class="text-muted">-</span>
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% if race.heats.count > 0 %}
+                                {% with finalized=race.heats.all|length %}
+                                <span class="badge bg-success">組編成済</span>
+                                {% endwith %}
+                                {% else %}
+                                <span class="badge bg-secondary">未編成</span>
                                 {% endif %}
                             </td>
                             <td class="text-end">
                                 {% if competition.can_entry and not race.is_full %}
-                                <a href="{% url 'entries:create' competition_pk=competition.pk race_pk=race.pk %}" 
-                                   class="btn btn-sm btn-outline-primary">
+                                <a href="{% url 'entries:create' competition_pk=competition.pk race_pk=race.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
                                     エントリー
                                 </a>
                                 {% elif race.is_full %}
@@ -178,7 +235,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- サイドバー -->
     <div class="col-lg-4">
         {% if request.user.is_admin %}
@@ -186,25 +243,32 @@
         <div class="card mb-4 admin-menu-card">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
                     </svg>
                     管理者メニュー
                 </span>
             </div>
             <div class="card-body">
                 <div class="admin-menu-links">
-                    <a href="{% url 'heats:management' competition_pk=competition.pk %}" class="btn btn-outline-primary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <a href="{% url 'heats:management' competition_pk=competition.pk %}"
+                        class="btn btn-outline-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                             <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                         </svg>
                         番組編成
                     </a>
-                    <a href="{% url 'heats:checkin_search' competition_pk=competition.pk %}" class="btn btn-outline-primary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <a href="{% url 'heats:checkin_search' competition_pk=competition.pk %}"
+                        class="btn btn-outline-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="8.5" cy="7" r="4"></circle>
                             <polyline points="17 11 19 13 23 9"></polyline>
@@ -212,7 +276,8 @@
                         受付・点呼
                     </a>
                     <a href="{% url 'reports:index' competition_pk=competition.pk %}" class="btn btn-outline-primary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -225,12 +290,13 @@
             </div>
         </div>
         {% endif %}
-        
+
         <!-- 駐車場申請 -->
         <div class="card mb-4">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                         <path d="M9 17V7h4a3 3 0 0 1 0 6H9"></path>
                     </svg>
@@ -239,8 +305,10 @@
             </div>
             <div class="card-body">
                 <p class="small text-muted mb-3">大会当日に駐車場を利用する場合は事前に申請してください。</p>
-                <a href="{% url 'payments:parking_request' competition_pk=competition.pk %}" class="btn btn-outline-primary w-100">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                <a href="{% url 'payments:parking_request' competition_pk=competition.pk %}"
+                    class="btn btn-outline-primary w-100">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 4px;">
                         <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                         <path d="M9 17V7h4a3 3 0 0 1 0 6H9"></path>
                     </svg>
@@ -248,13 +316,16 @@
                 </a>
             </div>
         </div>
-        
+
         <!-- 注意事項 -->
         <div class="card notice-card">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
                         <line x1="12" y1="9" x2="12" y2="13"></line>
                         <line x1="12" y1="17" x2="12.01" y2="17"></line>
                     </svg>
@@ -271,4 +342,36 @@
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+    (function () {
+        'use strict';
+
+        // 性別フィルタ機能
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const raceRows = document.querySelectorAll('#raceTable tbody tr[data-gender]');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const filter = this.dataset.filter;
+
+                // ボタンのアクティブ状態を更新
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // 行のフィルタリング
+                raceRows.forEach(row => {
+                    const gender = row.dataset.gender;
+                    if (filter === 'all' || gender === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    })();
+</script>
+{% endblock %}
 {% endblock %}

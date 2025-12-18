@@ -13,6 +13,21 @@
     </h1>
 </div>
 
+<!-- 緊急お知らせバナー -->
+{% for news in news_items %}
+{% if news.is_important %}
+<div class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill fs-4 me-3 flex-shrink-0" style="animation: pulse 1.5s infinite;"></i>
+    <div class="flex-grow-1">
+        <strong>{{ news.title }}</strong>
+        <p class="mb-0 small text-danger-emphasis">{{ news.body|truncatewords:30 }}</p>
+    </div>
+    <a href="{% url 'news:detail' pk=news.pk %}" class="btn btn-outline-danger btn-sm ms-3 flex-shrink-0">詳細</a>
+    <button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="閉じる"></button>
+</div>
+{% endif %}
+{% endfor %}
+
 <!-- お知らせセクション -->
 {% if news_items %}
 <div class="news-section dashboard-section">
@@ -27,15 +42,19 @@
     </div>
     <div class="news-list">
         {% for item in news_items %}
-        <a href="{% url 'news:detail' pk=item.pk %}" class="news-item {% if item.is_important %}news-item-important{% endif %}">
+        <a href="{% url 'news:detail' pk=item.pk %}"
+            class="news-item {% if item.is_important %}news-item-important{% endif %}">
             <div class="news-content">
-                <span class="news-badge {% if item.category == 'important' or item.category == 'urgent' %}bg-danger{% elif item.category == 'correction' %}bg-warning text-dark{% else %}bg-info{% endif %}">
+                <span
+                    class="news-badge {% if item.category == 'important' or item.category == 'urgent' %}bg-danger{% elif item.category == 'correction' %}bg-warning text-dark{% else %}bg-info{% endif %}">
                     {{ item.get_category_display }}
                 </span>
                 <span class="news-title">
                     {% if item.is_important %}
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
                         <line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2"></line>
                         <line x1="12" y1="17" x2="12.01" y2="17" stroke="white" stroke-width="2"></line>
                     </svg>
@@ -57,7 +76,8 @@
         <div class="card mb-4 dashboard-section">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
                         <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -71,13 +91,15 @@
                 {% if upcoming_competitions %}
                 <div class="list-group list-group-flush">
                     {% for comp in upcoming_competitions %}
-                    <a href="{% url 'competitions:detail' comp.pk %}" class="list-group-item list-group-item-action p-3">
+                    <a href="{% url 'competitions:detail' comp.pk %}"
+                        class="list-group-item list-group-item-action p-3">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h6 class="mb-1">{{ comp.name }}</h6>
                                 <small class="text-muted d-flex align-items-center gap-3">
                                     <span class="d-flex align-items-center gap-1">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
                                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                             <line x1="16" y1="2" x2="16" y2="6"></line>
                                             <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -86,7 +108,8 @@
                                         {{ comp.event_date|date:"Y年n月j日" }}
                                     </span>
                                     <span class="d-flex align-items-center gap-1">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                             <circle cx="12" cy="10" r="3"></circle>
                                         </svg>
@@ -96,9 +119,9 @@
                             </div>
                             <div>
                                 {% if comp.can_entry %}
-                                    <span class="badge-entry-open">エントリー受付中</span>
+                                <span class="badge-entry-open">エントリー受付中</span>
                                 {% else %}
-                                    <span class="badge-entry-closed">{{ comp.entry_status }}</span>
+                                <span class="badge-entry-closed">{{ comp.entry_status }}</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -107,7 +130,8 @@
                 </div>
                 {% else %}
                 <div class="empty-state">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
                         <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -118,12 +142,13 @@
                 {% endif %}
             </div>
         </div>
-        
+
         <!-- 最近のエントリー -->
         <div class="card dashboard-section">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <path d="M9 11l3 3L22 4"></path>
                         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                     </svg>
@@ -153,31 +178,35 @@
                                 <td class="time-display">{{ entry.declared_time_display }}</td>
                                 <td>
                                     {% if entry.status == 'confirmed' %}
-                                        <span class="badge-status badge-confirmed">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            確定
-                                        </span>
+                                    <span class="badge-status badge-confirmed">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                        確定
+                                    </span>
                                     {% elif entry.status == 'pending' %}
-                                        <span class="badge-status badge-pending">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                            </svg>
-                                            入金待ち
-                                        </span>
+                                    <span class="badge-status badge-pending">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        入金待ち
+                                    </span>
                                     {% elif entry.status == 'payment_uploaded' %}
-                                        <span class="badge-status badge-processing">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <path d="M12 16v-4"></path>
-                                                <path d="M12 8h.01"></path>
-                                            </svg>
-                                            確認中
-                                        </span>
+                                    <span class="badge-status badge-processing">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M12 16v-4"></path>
+                                            <path d="M12 8h.01"></path>
+                                        </svg>
+                                        確認中
+                                    </span>
                                     {% else %}
-                                        <span class="badge-status" style="background: #f3f4f6; color: #6b7280;">{{ entry.get_status_display }}</span>
+                                    <span class="badge-status" style="background: #f3f4f6; color: #6b7280;">{{
+                                        entry.get_status_display }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -187,7 +216,8 @@
                 </div>
                 {% else %}
                 <div class="empty-state">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
                         <path d="M9 11l3 3L22 4"></path>
                         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                     </svg>
@@ -197,14 +227,15 @@
             </div>
         </div>
     </div>
-    
+
     <!-- サイドバー -->
     <div class="col-lg-4">
         <!-- クイックリンク -->
         <div class="card mb-4 dashboard-section">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
                     クイックリンク
@@ -213,7 +244,8 @@
             <div class="card-body">
                 <div class="quick-links">
                     <a href="{% url 'accounts:athlete_list' %}" class="quick-link-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -222,7 +254,8 @@
                         選手管理
                     </a>
                     <a href="{% url 'competitions:list' %}" class="quick-link-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
                             <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -233,13 +266,14 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 申込状況サマリー -->
         {% if entry_groups %}
         <div class="card dashboard-section">
             <div class="card-header">
                 <span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right: 6px;">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                         <line x1="8" y1="10" x2="16" y2="10"></line>
@@ -259,11 +293,11 @@
                         </div>
                         <div>
                             {% if group.status == 'confirmed' %}
-                                <span class="badge-status badge-confirmed">確定</span>
+                            <span class="badge-status badge-confirmed">確定</span>
                             {% elif group.status == 'pending' %}
-                                <span class="badge-status badge-pending">入金待ち</span>
+                            <span class="badge-status badge-pending">入金待ち</span>
                             {% elif group.status == 'payment_uploaded' %}
-                                <span class="badge-status badge-processing">確認中</span>
+                            <span class="badge-status badge-processing">確認中</span>
                             {% endif %}
                         </div>
                     </div>

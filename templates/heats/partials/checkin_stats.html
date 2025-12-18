@@ -1,0 +1,48 @@
+<!-- 点呼ダッシュボード統計情報（htmxパーシャル） -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="stat-number text-primary">{{ stats.total }}</div>
+                <div class="text-muted">総エントリー</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="stat-number text-success">{{ stats.checked_in }}</div>
+                <div class="text-muted">点呼完了</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="stat-number text-warning">{{ stats.pending }}</div>
+                <div class="text-muted">未点呼</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="stat-number text-danger">{{ stats.dns }}</div>
+                <div class="text-muted">欠場(DNS)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全体プログレスバー -->
+<div class="mt-3">
+    <div class="d-flex justify-content-between mb-1">
+        <span>全体進捗</span>
+        <span class="fw-bold">{{ stats.progress }}%</span>
+    </div>
+    <div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{ stats.progress }}%"
+            aria-valuenow="{{ stats.progress }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+    </div>
+</div>

@@ -249,6 +249,40 @@ def checkin_status_api(request, competition_pk):
 
 @login_required
 @admin_required
+def checkin_stats_partial(request, competition_pk):
+    """点呼状況統計パーシャル（htmx用）"""
+    competition = get_object_or_404(Competition, pk=competition_pk)
+    
+    # 統計を計算
+    total = 0
+    checked_in = 0
+    dns = 0
+    
+    for race in competition.races.filter(is_active=True):
+        for heat in race.heats.filter(is_finalized=True):
+            total += heat.assignments.count()
+            checked_in += heat.assignments.filter(checked_in=True).count()
+            dns += heat.assignments.filter(status='dns').count()
+    
+    pending = total - checked_in - dns
+    progress = round(checked_in / total * 100) if total > 0 else 0
+    
+    stats = {
+        'total': total,
+        'checked_in': checked_in,
+        'dns': dns,
+        'pending': pending,
+        'progress': progress,
+    }
+    
+    return render(request, 'heats/partials/checkin_stats.html', {
+        'stats': stats,
+        'competition': competition,
+    })
+
+
+@login_required
+@admin_required
 @require_POST
 def checkin(request, assignment_pk):
     """点呼チェックイン"""

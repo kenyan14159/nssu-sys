@@ -7,42 +7,60 @@
     .progress-lg {
         height: 25px;
     }
+
     .heat-card {
         transition: all 0.3s;
     }
+
     .heat-card.complete {
         border-color: #198754;
         background-color: #d1e7dd;
     }
+
     .unchecked-list {
         max-height: 150px;
         overflow-y: auto;
     }
+
     .unchecked-item {
         font-size: 0.85rem;
         padding: 0.25rem 0.5rem;
         border-bottom: 1px solid #e9ecef;
     }
+
     .unchecked-item:last-child {
         border-bottom: none;
     }
+
     .stat-number {
         font-size: 2rem;
         font-weight: bold;
     }
+
     .refresh-indicator {
         display: none;
     }
+
     .refresh-indicator.active {
         display: inline-block;
     }
+
     .pulse {
         animation: pulse 1s infinite;
     }
+
     @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
 </style>
 {% endblock %}
@@ -51,7 +69,8 @@
 <div class="page-header">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'heats:management' competition_pk=competition.pk %}">番組編成</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'heats:management' competition_pk=competition.pk %}">番組編成</a>
+            </li>
             <li class="breadcrumb-item active">点呼ダッシュボード</li>
         </ol>
     </nav>
@@ -73,200 +92,220 @@
     </div>
 </div>
 
-<!-- 全体サマリー -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="stat-number text-primary" id="total-count">
-                    {% with total=races|length %}
-                    {{ races.0.total|default:0 }}
-                    {% endwith %}
-                </div>
-                <div class="text-muted">総エントリー</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="stat-number text-success" id="checkedin-count">0</div>
-                <div class="text-muted">点呼完了</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="stat-number text-warning" id="pending-count">0</div>
-                <div class="text-muted">未点呼</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="stat-number text-danger" id="dns-count">0</div>
-                <div class="text-muted">欠場(DNS)</div>
-            </div>
+<!-- 全体サマリー (htmxリアルタイム更新) -->
+<div id="stats-container" class="mb-4" hx-get="{% url 'heats:checkin_stats_partial' competition_pk=competition.pk %}"
+    hx-trigger="load, every 5s" hx-swap="innerHTML">
+    <!-- 初回はローディング表示 -->
+    <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">読み込み中...</span>
         </div>
     </div>
 </div>
 
 <!-- 種目別進捗 -->
 <div id="races-container">
-{% for race_data in races %}
-<div class="card mb-4" data-race-id="{{ race_data.race.pk }}">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">
-            <i class="bi bi-flag"></i> {{ race_data.race.name }}
-        </h5>
-        <div>
-            <span class="badge bg-primary me-2">{{ race_data.checked_in }}/{{ race_data.total }}名</span>
-            <span class="badge bg-success">{{ race_data.progress }}%</span>
-        </div>
-    </div>
-    <div class="card-body">
-        <!-- 種目全体の進捗バー -->
-        <div class="progress progress-lg mb-3">
-            <div class="progress-bar bg-success" role="progressbar" 
-                 style="width: {{ race_data.progress }}%"
-                 aria-valuenow="{{ race_data.progress }}" aria-valuemin="0" aria-valuemax="100">
-                {{ race_data.progress }}%
+    {% for race_data in races %}
+    <div class="card mb-4" data-race-id="{{ race_data.race.pk }}">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-flag"></i> {{ race_data.race.name }}
+            </h5>
+            <div>
+                <span class="badge bg-primary me-2">{{ race_data.checked_in }}/{{ race_data.total }}名</span>
+                <span class="badge bg-success">{{ race_data.progress }}%</span>
             </div>
         </div>
-        
-        <!-- 組別の状況 -->
-        <div class="row">
-            {% for heat_data in race_data.heats %}
-            <div class="col-md-4 col-lg-3 mb-3">
-                <div class="card heat-card {% if heat_data.progress == 100 %}complete{% endif %}"
-                     data-heat-id="{{ heat_data.heat.pk }}">
-                    <div class="card-header py-2">
-                        <strong>{{ heat_data.heat.heat_number }}組</strong>
-                        {% if heat_data.progress == 100 %}
-                            <span class="badge bg-success float-end">完了</span>
-                        {% else %}
-                            <span class="badge bg-secondary float-end">{{ heat_data.checked_in }}/{{ heat_data.total }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="card-body py-2">
-                        <div class="progress mb-2" style="height: 10px;">
-                            <div class="progress-bar bg-success" style="width: {{ heat_data.progress }}%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span class="text-success"><i class="bi bi-check-circle"></i> {{ heat_data.checked_in }}</span>
-                            <span class="text-warning"><i class="bi bi-clock"></i> {{ heat_data.pending }}</span>
-                            <span class="text-danger"><i class="bi bi-x-circle"></i> {{ heat_data.dns }}</span>
-                        </div>
-                    </div>
-                    {% if heat_data.pending > 0 %}
-                    <div class="card-footer py-1">
-                        <a href="{% url 'heats:detail' pk=heat_data.heat.pk %}" class="btn btn-sm btn-outline-primary w-100">
-                            <i class="bi bi-list-check"></i> 詳細
-                        </a>
-                    </div>
-                    {% endif %}
+        <div class="card-body">
+            <!-- 種目全体の進捗バー -->
+            <div class="progress progress-lg mb-3">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ race_data.progress }}%"
+                    aria-valuenow="{{ race_data.progress }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ race_data.progress }}%
                 </div>
             </div>
-            {% endfor %}
+
+            <!-- 組別の状況 -->
+            <div class="row">
+                {% for heat_data in race_data.heats %}
+                <div class="col-md-4 col-lg-3 mb-3">
+                    <div class="card heat-card {% if heat_data.progress == 100 %}complete{% endif %}"
+                        data-heat-id="{{ heat_data.heat.pk }}">
+                        <div class="card-header py-2">
+                            <strong>{{ heat_data.heat.heat_number }}組</strong>
+                            {% if heat_data.progress == 100 %}
+                            <span class="badge bg-success float-end">完了</span>
+                            {% else %}
+                            <span class="badge bg-secondary float-end">{{ heat_data.checked_in }}/{{ heat_data.total
+                                }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body py-2">
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar bg-success" style="width: {{ heat_data.progress }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span class="text-success"><i class="bi bi-check-circle"></i> {{ heat_data.checked_in
+                                    }}</span>
+                                <span class="text-warning"><i class="bi bi-clock"></i> {{ heat_data.pending }}</span>
+                                <span class="text-danger"><i class="bi bi-x-circle"></i> {{ heat_data.dns }}</span>
+                            </div>
+                        </div>
+                        {% if heat_data.pending > 0 %}
+                        <div class="card-footer py-1">
+                            <a href="{% url 'heats:detail' pk=heat_data.heat.pk %}"
+                                class="btn btn-sm btn-outline-primary w-100">
+                                <i class="bi bi-list-check"></i> 詳細
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
-{% empty %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> 確定された組がありません。番組編成で組を確定してください。
-</div>
-{% endfor %}
+    {% empty %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> 確定された組がありません。番組編成で組を確定してください。
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let autoRefresh = false;
-    let refreshInterval = null;
-    const REFRESH_INTERVAL = 5000; // 5秒
-    
-    const toggleBtn = document.getElementById('toggle-auto-refresh');
-    const statusText = document.getElementById('auto-refresh-status');
-    const indicator = document.getElementById('refresh-indicator');
-    
-    toggleBtn.addEventListener('click', function() {
-        autoRefresh = !autoRefresh;
-        if (autoRefresh) {
-            statusText.textContent = 'ON';
-            toggleBtn.innerHTML = '<i class="bi bi-pause-circle"></i> 自動更新: <span id="auto-refresh-status">ON</span>';
-            startAutoRefresh();
-        } else {
-            statusText.textContent = 'OFF';
-            toggleBtn.innerHTML = '<i class="bi bi-play-circle"></i> 自動更新: <span id="auto-refresh-status">OFF</span>';
-            stopAutoRefresh();
-        }
-    });
-    
-    function startAutoRefresh() {
-        if (refreshInterval) clearInterval(refreshInterval);
-        refreshInterval = setInterval(fetchStatus, REFRESH_INTERVAL);
-    }
-    
-    function stopAutoRefresh() {
-        if (refreshInterval) {
-            clearInterval(refreshInterval);
-            refreshInterval = null;
-        }
-    }
-    
-    function fetchStatus() {
-        indicator.classList.add('active');
-        
-        fetch('{% url "heats:checkin_status_api" competition_pk=competition.pk %}')
-            .then(response => response.json())
-            .then(data => {
-                updateDashboard(data);
-                indicator.classList.remove('active');
-            })
-            .catch(error => {
-                console.error('更新エラー:', error);
-                indicator.classList.remove('active');
-            });
-    }
-    
-    function updateDashboard(data) {
-        let totalAll = 0;
-        let checkedInAll = 0;
-        let dnsAll = 0;
-        
-        data.races.forEach(race => {
-            totalAll += race.total;
-            checkedInAll += race.checked_in;
-            
-            race.heats.forEach(heat => {
-                dnsAll += heat.dns;
-                
-                // 組カードの更新
-                const heatCard = document.querySelector(`[data-heat-id="${heat.id}"]`);
-                if (heatCard) {
-                    const progressBar = heatCard.querySelector('.progress-bar');
-                    progressBar.style.width = heat.progress + '%';
-                    
-                    if (heat.progress === 100) {
-                        heatCard.classList.add('complete');
-                    }
-                }
-            });
+    document.addEventListener('DOMContentLoaded', function () {
+        let autoRefresh = false;
+        let refreshInterval = null;
+        const REFRESH_INTERVAL = 5000; // 5秒
+
+        const toggleBtn = document.getElementById('toggle-auto-refresh');
+        const statusText = document.getElementById('auto-refresh-status');
+        const indicator = document.getElementById('refresh-indicator');
+
+        toggleBtn.addEventListener('click', function () {
+            autoRefresh = !autoRefresh;
+            if (autoRefresh) {
+                statusText.textContent = 'ON';
+                toggleBtn.innerHTML = '<i class="bi bi-pause-circle"></i> 自動更新: <span id="auto-refresh-status">ON</span>';
+                startAutoRefresh();
+            } else {
+                statusText.textContent = 'OFF';
+                toggleBtn.innerHTML = '<i class="bi bi-play-circle"></i> 自動更新: <span id="auto-refresh-status">OFF</span>';
+                stopAutoRefresh();
+            }
         });
-        
-        // サマリー更新
-        document.getElementById('total-count').textContent = totalAll;
-        document.getElementById('checkedin-count').textContent = checkedInAll;
-        document.getElementById('pending-count').textContent = totalAll - checkedInAll - dnsAll;
-        document.getElementById('dns-count').textContent = dnsAll;
+
+        function startAutoRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(fetchStatus, REFRESH_INTERVAL);
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+        }
+
+        function fetchStatus() {
+            indicator.classList.add('active');
+
+            fetch('{% url "heats:checkin_status_api" competition_pk=competition.pk %}')
+                .then(response => response.json())
+                .then(data => {
+                    updateDashboard(data);
+                    indicator.classList.remove('active');
+                })
+                .catch(error => {
+                    console.error('更新エラー:', error);
+                    indicator.classList.remove('active');
+                });
+        }
+
+        function updateDashboard(data) {
+            let totalAll = 0;
+            let checkedInAll = 0;
+            let dnsAll = 0;
+
+            data.races.forEach(race => {
+                totalAll += race.total;
+                checkedInAll += race.checked_in;
+
+                race.heats.forEach(heat => {
+                    dnsAll += heat.dns;
+
+                    // 組カードの更新
+                    const heatCard = document.querySelector(`[data-heat-id="${heat.id}"]`);
+                    if (heatCard) {
+                        const progressBar = heatCard.querySelector('.progress-bar');
+                        progressBar.style.width = heat.progress + '%';
+
+                        if (heat.progress === 100) {
+                            heatCard.classList.add('complete');
+                        }
+                    }
+                });
+            });
+
+            // サマリー更新
+            document.getElementById('total-count').textContent = totalAll;
+            document.getElementById('checkedin-count').textContent = checkedInAll;
+            document.getElementById('pending-count').textContent = totalAll - checkedInAll - dnsAll;
+            document.getElementById('dns-count').textContent = dnsAll;
+        }
+
+        // 初回データ取得
+        fetchStatus();
+    });
+
+    // htmx用グローバル関数（hx-on::after-requestから呼び出し）
+    function updateStats(event) {
+        try {
+            const data = JSON.parse(event.detail.xhr.responseText);
+            let totalAll = 0;
+            let checkedInAll = 0;
+            let dnsAll = 0;
+
+            data.races.forEach(race => {
+                totalAll += race.total;
+                checkedInAll += race.checked_in;
+
+                race.heats.forEach(heat => {
+                    dnsAll += heat.dns;
+
+                    // 組カードの更新
+                    const heatCard = document.querySelector(`[data-heat-id="${heat.id}"]`);
+                    if (heatCard) {
+                        const progressBar = heatCard.querySelector('.progress-bar');
+                        if (progressBar) {
+                            progressBar.style.width = heat.progress + '%';
+                        }
+
+                        if (heat.progress === 100) {
+                            heatCard.classList.add('complete');
+                        }
+                    }
+                });
+            });
+
+            // サマリー更新
+            document.getElementById('total-count').textContent = totalAll;
+            document.getElementById('checkedin-count').textContent = checkedInAll;
+            document.getElementById('pending-count').textContent = totalAll - checkedInAll - dnsAll;
+            document.getElementById('dns-count').textContent = dnsAll;
+
+            // 更新インジケーター
+            const indicator = document.getElementById('refresh-indicator');
+            if (indicator) {
+                indicator.classList.add('active');
+                setTimeout(() => indicator.classList.remove('active'), 500);
+            }
+        } catch (e) {
+            console.error('htmx更新エラー:', e);
+        }
     }
-    
-    // 初回データ取得
-    fetchStatus();
-});
 </script>
 {% endblock %}

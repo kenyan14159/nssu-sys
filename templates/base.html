@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1a365d">
     <meta name="description" content="日体大長距離競技会エントリーシステム">
     <title>{% block title %}Nit-Sys{% endblock %} | 日体大記録会エントリーシステム</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -14,7 +15,7 @@
     <!-- Competitions Custom CSS -->
     {% load static %}
     <link href="{% static 'css/competitions.css' %}" rel="stylesheet">
-    
+
     <style>
         :root {
             --nit-primary: #1a365d;
@@ -28,7 +29,7 @@
             --sidebar-width: 250px;
             --navbar-height: 56px;
         }
-        
+
         /* スキップリンク（アクセシビリティ） */
         .skip-link {
             position: absolute;
@@ -40,26 +41,27 @@
             z-index: 9999;
             transition: top 0.3s;
         }
+
         .skip-link:focus {
             top: 0;
             color: white;
         }
-        
+
         body {
             font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
             background-color: var(--nit-light);
         }
-        
+
         .navbar {
             background: linear-gradient(135deg, var(--nit-primary) 0%, var(--nit-accent) 100%);
             height: var(--navbar-height);
         }
-        
+
         .navbar-brand {
             font-weight: bold;
             letter-spacing: 1px;
         }
-        
+
         /* モバイルメニューボタン */
         .mobile-menu-btn {
             display: none;
@@ -70,13 +72,13 @@
             padding: 0.25rem 0.5rem;
             margin-right: 0.5rem;
         }
-        
+
         @media (max-width: 991.98px) {
             .mobile-menu-btn {
                 display: block;
             }
         }
-        
+
         .sidebar {
             position: fixed;
             top: var(--navbar-height);
@@ -89,33 +91,33 @@
             overflow-y: auto;
             z-index: 1040;
         }
-        
+
         .sidebar .nav-link {
             color: #4a5568;
             padding: 0.75rem 1.5rem;
             border-left: 3px solid transparent;
             transition: all 0.2s ease;
         }
-        
+
         .sidebar .nav-link:hover,
         .sidebar .nav-link:focus {
             background-color: #edf2f7;
             color: var(--nit-primary);
             outline: none;
         }
-        
+
         .sidebar .nav-link.active {
             background-color: #ebf4ff;
             color: var(--nit-accent);
             border-left-color: var(--nit-accent);
             font-weight: 600;
         }
-        
+
         .sidebar .nav-link i {
             margin-right: 0.5rem;
             width: 20px;
         }
-        
+
         /* キーボードショートカットバッジ */
         .sidebar .nav-link .kbd-hint {
             font-size: 0.65rem;
@@ -126,44 +128,46 @@
             color: #718096;
             font-family: monospace;
         }
-        
+
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 2rem;
             min-height: calc(100vh - var(--navbar-height));
         }
-        
+
         .card {
             border: none;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             border-radius: 0.5rem;
         }
-        
+
         .card-header {
             background: white;
             border-bottom: 1px solid #e2e8f0;
             font-weight: 600;
         }
-        
+
         .btn-primary {
             background-color: var(--nit-accent);
             border-color: var(--nit-accent);
         }
-        
+
         .btn-primary:hover {
             background-color: var(--nit-primary);
             border-color: var(--nit-primary);
         }
-        
+
         /* ボタンローディング状態 */
         .btn.is-loading {
             position: relative;
             pointer-events: none;
             opacity: 0.7;
         }
+
         .btn.is-loading .btn-text {
             visibility: hidden;
         }
+
         .btn.is-loading::after {
             content: "";
             position: absolute;
@@ -178,25 +182,28 @@
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         .badge-pending {
             background-color: #ecc94b;
             color: #744210;
         }
-        
+
         .badge-confirmed {
             background-color: #48bb78;
             color: white;
         }
-        
+
         .badge-cancelled {
             background-color: #fc8181;
             color: white;
         }
-        
+
         /* テーブル改善 */
         .table th {
             background-color: #f7fafc;
@@ -206,55 +213,59 @@
             top: 0;
             z-index: 10;
         }
-        
+
         .table-responsive {
             max-height: 70vh;
             overflow-y: auto;
         }
-        
+
         /* ソート可能カラム */
         .sortable {
             cursor: pointer;
             user-select: none;
         }
+
         .sortable:hover {
             background-color: #edf2f7;
         }
+
         .sortable::after {
             content: " ⇅";
             opacity: 0.3;
         }
+
         .sortable.asc::after {
             content: " ↑";
             opacity: 1;
         }
+
         .sortable.desc::after {
             content: " ↓";
             opacity: 1;
         }
-        
+
         .page-header {
             margin-bottom: 1.5rem;
         }
-        
+
         .page-header h1 {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--nit-primary);
         }
-        
+
         .alert {
             border: none;
             border-radius: 0.5rem;
         }
-        
+
         /* 未ログイン時のレイアウト */
         .main-content-full {
             margin-left: 0;
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         /* トースト通知 */
         .toast-container {
             position: fixed;
@@ -262,31 +273,37 @@
             right: 1rem;
             z-index: 1080;
         }
+
         .toast {
             min-width: 280px;
         }
+
         .toast-success {
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
+
         .toast-error {
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+
         .toast-info {
             background-color: #d1ecf1;
             border-color: #bee5eb;
         }
-        
+
         /* モバイル対応 - オフキャンバスメニュー */
         @media (max-width: 991.98px) {
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
             }
+
             .sidebar.show {
                 transform: translateX(0);
             }
+
             .sidebar-overlay {
                 display: none;
                 position: fixed;
@@ -297,14 +314,16 @@
                 background: rgba(0, 0, 0, 0.5);
                 z-index: 1039;
             }
+
             .sidebar-overlay.show {
                 display: block;
             }
+
             .main-content {
                 margin-left: 0;
             }
         }
-        
+
         /* カスタムスタイル */
         .status-badge {
             padding: 0.25rem 0.75rem;
@@ -312,18 +331,18 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
-        
+
         .time-display {
             font-family: 'Monaco', 'Consolas', monospace;
             font-size: 0.9rem;
         }
-        
+
         /* フォーカス表示の改善（アクセシビリティ） */
         :focus-visible {
             outline: 3px solid var(--nit-accent);
             outline-offset: 2px;
         }
-        
+
         /* キーボードショートカットモーダル */
         .shortcut-key {
             display: inline-block;
@@ -333,9 +352,9 @@
             border-radius: 4px;
             font-family: monospace;
             font-size: 0.85rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* ページローディングインジケーター */
         .page-loading {
             position: fixed;
@@ -349,107 +368,132 @@
             z-index: 9999;
             display: none;
         }
+
         .page-loading.active {
             display: block;
         }
+
         @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     <!-- スキップリンク（アクセシビリティ） -->
     <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
-    
+
     <!-- ページローディングインジケーター -->
     <div class="page-loading" id="pageLoading" aria-hidden="true"></div>
-    
+
     <!-- ナビゲーションバー -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" role="navigation" aria-label="メインナビゲーション">
         <div class="container-fluid">
             {% if user.is_authenticated %}
-            <button class="mobile-menu-btn" type="button" id="mobileMenuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebarMenu">
+            <button class="mobile-menu-btn" type="button" id="mobileMenuBtn" aria-label="メニューを開く" aria-expanded="false"
+                aria-controls="sidebarMenu">
                 <i class="bi bi-list"></i>
             </button>
             {% endif %}
-            
+
             <a class="navbar-brand" href="{% url 'competitions:dashboard' %}">
                 <i class="bi bi-stopwatch" aria-hidden="true"></i> Nit-Sys
             </a>
-            
+
             <ul class="navbar-nav ms-auto flex-row align-items-center">
                 {% if user.is_authenticated %}
-                    <li class="nav-item d-none d-lg-block">
-                        <button class="nav-link btn btn-link" type="button" id="shortcutHelpBtn" aria-label="キーボードショートカット" title="キーボードショートカット (?)">
-                            <i class="bi bi-keyboard"></i>
-                        </button>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle" aria-hidden="true"></i><span class="d-none d-md-inline"> {{ user.full_name }}</span>
-                            {% if user.is_admin %}<span class="badge bg-warning text-dark d-none d-md-inline">管理者</span>{% endif %}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person" aria-hidden="true"></i> プロフィール</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="bi bi-box-arrow-right" aria-hidden="true"></i> ログアウト</a></li>
-                        </ul>
+                <li class="nav-item d-none d-lg-block">
+                    <button class="nav-link btn btn-link" type="button" id="shortcutHelpBtn" aria-label="キーボードショートカット"
+                        title="キーボードショートカット (?)">
+                        <i class="bi bi-keyboard"></i>
+                    </button>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle" aria-hidden="true"></i><span class="d-none d-md-inline"> {{
+                            user.full_name }}</span>
+                        {% if user.is_admin %}<span class="badge bg-warning text-dark d-none d-md-inline">管理者</span>{% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person"
+                                    aria-hidden="true"></i> プロフィール</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
                         </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> ログイン</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                        <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="bi bi-box-arrow-right"
+                                    aria-hidden="true"></i> ログアウト</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"
+                            aria-hidden="true"></i> ログイン</a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
     </nav>
-    
+
     {% if user.is_authenticated %}
     <!-- モバイル用オーバーレイ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
+
     <!-- サイドバー -->
     <aside class="sidebar" id="sidebarMenu" role="navigation" aria-label="サイドナビゲーション">
         <nav class="nav flex-column">
-            <a class="nav-link d-flex align-items-center {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'competitions:dashboard' %}" data-shortcut="g d">
+            <a class="nav-link d-flex align-items-center {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                href="{% url 'competitions:dashboard' %}" data-shortcut="g d">
                 <i class="bi bi-house" aria-hidden="true"></i> ダッシュボード
                 <span class="kbd-hint d-none d-xl-inline">G D</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'competitions' in request.path and 'list' in request.path %}active{% endif %}" href="{% url 'competitions:list' %}" data-shortcut="g c">
+            <a class="nav-link d-flex align-items-center {% if 'competitions' in request.path and 'list' in request.path %}active{% endif %}"
+                href="{% url 'competitions:list' %}" data-shortcut="g c">
                 <i class="bi bi-calendar-event" aria-hidden="true"></i> 大会一覧
                 <span class="kbd-hint d-none d-xl-inline">G C</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'athletes' in request.path %}active{% endif %}" href="{% url 'accounts:athlete_list' %}" data-shortcut="g a">
+            <a class="nav-link d-flex align-items-center {% if 'athletes' in request.path %}active{% endif %}"
+                href="{% url 'accounts:athlete_list' %}" data-shortcut="g a">
                 <i class="bi bi-people" aria-hidden="true"></i> 選手管理
                 <span class="kbd-hint d-none d-xl-inline">G A</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'history' in request.path %}active{% endif %}" href="{% url 'competitions:history' %}" data-shortcut="g h">
+            <a class="nav-link d-flex align-items-center {% if 'history' in request.path %}active{% endif %}"
+                href="{% url 'competitions:history' %}" data-shortcut="g h">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> エントリー履歴
                 <span class="kbd-hint d-none d-xl-inline">G H</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'news' in request.path and 'admin' not in request.path %}active{% endif %}" href="{% url 'news:list' %}" data-shortcut="g n">
+            <a class="nav-link d-flex align-items-center {% if 'news' in request.path and 'admin' not in request.path %}active{% endif %}"
+                href="{% url 'news:list' %}" data-shortcut="g n">
                 <i class="bi bi-megaphone" aria-hidden="true"></i> お知らせ
                 <span class="kbd-hint d-none d-xl-inline">G N</span>
             </a>
-            
+
             {% if user.is_admin %}
             <hr class="mx-3">
             <small class="px-3 text-muted text-uppercase">管理者メニュー</small>
-            <a class="nav-link d-flex align-items-center {% if 'payments/admin' in request.path %}active{% endif %}" href="{% url 'payments:admin_list' %}" data-shortcut="g p">
+            <a class="nav-link d-flex align-items-center {% if 'payments/admin' in request.path %}active{% endif %}"
+                href="{% url 'payments:admin_list' %}" data-shortcut="g p">
                 <i class="bi bi-credit-card" aria-hidden="true"></i> 入金確認
                 <span class="kbd-hint d-none d-xl-inline">G P</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'heats' in request.path %}active{% endif %}" href="{% url 'admin_competition_select' %}" data-shortcut="g b">
+            <a class="nav-link d-flex align-items-center {% if 'heats' in request.path %}active{% endif %}"
+                href="{% url 'admin_competition_select' %}" data-shortcut="g b">
                 <i class="bi bi-diagram-3" aria-hidden="true"></i> 番組編成
                 <span class="kbd-hint d-none d-xl-inline">G B</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'reports' in request.path %}active{% endif %}" href="{% url 'admin_report_select' %}" data-shortcut="g r">
+            <a class="nav-link d-flex align-items-center {% if 'reports' in request.path %}active{% endif %}"
+                href="{% url 'admin_report_select' %}" data-shortcut="g r">
                 <i class="bi bi-file-earmark-text" aria-hidden="true"></i> 帳票出力
                 <span class="kbd-hint d-none d-xl-inline">G R</span>
             </a>
-            <a class="nav-link d-flex align-items-center {% if 'checkin' in request.path %}active{% endif %}" href="{% url 'admin_checkin_select' %}" data-shortcut="g t">
+            <a class="nav-link d-flex align-items-center {% if 'checkin' in request.path %}active{% endif %}"
+                href="{% url 'admin_checkin_select' %}" data-shortcut="g t">
                 <i class="bi bi-person-check" aria-hidden="true"></i> 当日点呼
                 <span class="kbd-hint d-none d-xl-inline">G T</span>
             </a>
@@ -457,25 +501,27 @@
         </nav>
     </aside>
     {% endif %}
-    
+
     <!-- メインコンテンツ -->
-    <main id="main-content" class="{% if user.is_authenticated %}main-content{% else %}main-content-full py-4{% endif %}" role="main">
+    <main id="main-content"
+        class="{% if user.is_authenticated %}main-content{% else %}main-content-full py-4{% endif %}" role="main">
         <!-- フラッシュメッセージ -->
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="閉じる"></button>
-                </div>
-            {% endfor %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="閉じる"></button>
+        </div>
+        {% endfor %}
         {% endif %}
-        
+
         {% block content %}{% endblock %}
     </main>
-    
+
     <!-- トースト通知コンテナ -->
     <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-    
+
     <!-- キーボードショートカットモーダル -->
     <div class="modal fade" id="shortcutModal" tabindex="-1" aria-labelledby="shortcutModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -488,55 +534,135 @@
                     <h6 class="text-muted mb-3">ナビゲーション（Gキーの後に続けて押す）</h6>
                     <table class="table table-sm">
                         <tbody>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">D</span></td><td>ダッシュボード</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">C</span></td><td>大会一覧</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">A</span></td><td>選手管理</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">H</span></td><td>エントリー履歴</td></tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">D</span></td>
+                                <td>ダッシュボード</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">C</span></td>
+                                <td>大会一覧</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">A</span></td>
+                                <td>選手管理</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">H</span></td>
+                                <td>エントリー履歴</td>
+                            </tr>
                         </tbody>
                     </table>
                     <h6 class="text-muted mb-3 mt-4">管理者メニュー</h6>
                     <table class="table table-sm">
                         <tbody>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">P</span></td><td>入金確認</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">B</span></td><td>番組編成</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">R</span></td><td>帳票出力</td></tr>
-                            <tr><td><span class="shortcut-key">G</span> → <span class="shortcut-key">T</span></td><td>当日点呼</td></tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">P</span></td>
+                                <td>入金確認</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">B</span></td>
+                                <td>番組編成</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">R</span></td>
+                                <td>帳票出力</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">G</span> → <span class="shortcut-key">T</span></td>
+                                <td>当日点呼</td>
+                            </tr>
                         </tbody>
                     </table>
                     <h6 class="text-muted mb-3 mt-4">その他</h6>
                     <table class="table table-sm">
                         <tbody>
-                            <tr><td><span class="shortcut-key">/</span></td><td>検索にフォーカス</td></tr>
-                            <tr><td><span class="shortcut-key">?</span></td><td>このヘルプを表示</td></tr>
-                            <tr><td><span class="shortcut-key">Esc</span></td><td>モーダルを閉じる</td></tr>
+                            <tr>
+                                <td><span class="shortcut-key">/</span></td>
+                                <td>検索にフォーカス</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">?</span></td>
+                                <td>このヘルプを表示</td>
+                            </tr>
+                            <tr>
+                                <td><span class="shortcut-key">Esc</span></td>
+                                <td>モーダルを閉じる</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Bootstrap 5 JS -->
+
+    <!-- ページトップボタン -->
+    <a href="#" id="page-top" class="page-top-btn" title="ページトップへ戻る">
+        <i class="bi bi-arrow-up"></i>
+    </a>
+
+    <style>
+        .page-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: #0d6efd;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1050;
+        }
+
+        .page-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .page-top-btn:hover {
+            background: #0b5ed7;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .table-striped-alt tbody tr:nth-child(odd) {
+            background-color: #e0ffff;
+        }
+
+        .row-dns {
+            background-color: #b4b4b4 !important;
+            color: #6b6b6b;
+            text-decoration: line-through;
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-    (function() {
-        'use strict';
-        
-        // ===== トースト通知システム =====
-        window.NitSys = window.NitSys || {};
-        
-        NitSys.toast = function(message, type = 'info', duration = 4000) {
-            const container = document.getElementById('toastContainer');
-            const id = 'toast-' + Date.now();
-            const icons = {
-                success: 'bi-check-circle-fill',
-                error: 'bi-exclamation-triangle-fill',
-                info: 'bi-info-circle-fill',
-                warning: 'bi-exclamation-circle-fill'
-            };
-            
-            const html = `
+        (function () {
+            'use strict';
+
+            // ===== トースト通知システム =====
+            window.NitSys = window.NitSys || {};
+
+            NitSys.toast = function (message, type = 'info', duration = 4000) {
+                const container = document.getElementById('toastContainer');
+                const id = 'toast-' + Date.now();
+                const icons = {
+                    success: 'bi-check-circle-fill',
+                    error: 'bi-exclamation-triangle-fill',
+                    info: 'bi-info-circle-fill',
+                    warning: 'bi-exclamation-circle-fill'
+                };
+
+                const html = `
                 <div id="${id}" class="toast toast-${type}" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
                         <i class="bi ${icons[type] || icons.info} me-2 text-${type === 'error' ? 'danger' : type}"></i>
@@ -546,185 +672,217 @@
                     <div class="toast-body">${message}</div>
                 </div>
             `;
-            container.insertAdjacentHTML('beforeend', html);
-            
-            const toastEl = document.getElementById(id);
-            const toast = new bootstrap.Toast(toastEl, { delay: duration });
-            toast.show();
-            
-            toastEl.addEventListener('hidden.bs.toast', function() {
-                toastEl.remove();
-            });
-        };
-        
-        // ===== ボタンローディング・二重送信防止 =====
-        document.addEventListener('submit', function(e) {
-            const form = e.target;
-            if (form.dataset.submitted === 'true') {
-                e.preventDefault();
-                return;
-            }
-            
-            form.dataset.submitted = 'true';
-            const submitBtn = form.querySelector('button[type="submit"]:not([name]), button[type="submit"][name=""]:not([value]), input[type="submit"]');
-            
-            if (submitBtn && !submitBtn.classList.contains('no-loading')) {
-                const originalHtml = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span class="btn-text">' + originalHtml + '</span>';
-                submitBtn.classList.add('is-loading');
-                submitBtn.disabled = true;
-                
-                // ページ遷移しない場合（Ajax等）は戻す
-                setTimeout(function() {
-                    if (form.dataset.submitted === 'true') {
-                        form.dataset.submitted = 'false';
-                        submitBtn.classList.remove('is-loading');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalHtml;
-                    }
-                }, 10000);
-            }
-            
-            // ページローディング表示
-            document.getElementById('pageLoading').classList.add('active');
-        });
-        
-        // ===== モバイルサイドバー =====
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const sidebar = document.getElementById('sidebarMenu');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        if (mobileMenuBtn && sidebar && overlay) {
-            mobileMenuBtn.addEventListener('click', function() {
-                const isOpen = sidebar.classList.contains('show');
-                sidebar.classList.toggle('show');
-                overlay.classList.toggle('show');
-                mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
-            });
-            
-            overlay.addEventListener('click', function() {
-                sidebar.classList.remove('show');
-                overlay.classList.remove('show');
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            });
-        }
-        
-        // ===== キーボードショートカット =====
-        let gKeyPressed = false;
-        let gKeyTimeout = null;
-        
-        const shortcuts = {
-            'd': '[data-shortcut="g d"]',
-            'c': '[data-shortcut="g c"]',
-            'a': '[data-shortcut="g a"]',
-            'h': '[data-shortcut="g h"]',
-            'p': '[data-shortcut="g p"]',
-            'b': '[data-shortcut="g b"]',
-            'r': '[data-shortcut="g r"]',
-            't': '[data-shortcut="g t"]'
-        };
-        
-        document.addEventListener('keydown', function(e) {
-            // 入力フィールド内では無効
-            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) {
-                return;
-            }
-            
-            const key = e.key.toLowerCase();
-            
-            // ? でショートカットヘルプ表示
-            if (key === '?' || (e.shiftKey && key === '/')) {
-                e.preventDefault();
-                const modal = new bootstrap.Modal(document.getElementById('shortcutModal'));
-                modal.show();
-                return;
-            }
-            
-            // / で検索にフォーカス
-            if (key === '/') {
-                const searchInput = document.querySelector('input[type="search"], input[name="q"], input[placeholder*="検索"]');
-                if (searchInput) {
-                    e.preventDefault();
-                    searchInput.focus();
-                }
-                return;
-            }
-            
-            // G キーの処理
-            if (key === 'g' && !gKeyPressed) {
-                gKeyPressed = true;
-                gKeyTimeout = setTimeout(function() {
-                    gKeyPressed = false;
-                }, 1000);
-                return;
-            }
-            
-            // G + 次のキー
-            if (gKeyPressed && shortcuts[key]) {
-                e.preventDefault();
-                const link = document.querySelector(shortcuts[key]);
-                if (link) {
-                    window.location.href = link.href;
-                }
-                gKeyPressed = false;
-                clearTimeout(gKeyTimeout);
-            }
-        });
-        
-        // ショートカットヘルプボタン
-        const shortcutHelpBtn = document.getElementById('shortcutHelpBtn');
-        if (shortcutHelpBtn) {
-            shortcutHelpBtn.addEventListener('click', function() {
-                const modal = new bootstrap.Modal(document.getElementById('shortcutModal'));
-                modal.show();
-            });
-        }
-        
-        // ===== テーブルソート機能 =====
-        document.querySelectorAll('th.sortable').forEach(function(th) {
-            th.addEventListener('click', function() {
-                const table = th.closest('table');
-                const tbody = table.querySelector('tbody');
-                const rows = Array.from(tbody.querySelectorAll('tr'));
-                const colIndex = Array.from(th.parentNode.children).indexOf(th);
-                const isAsc = th.classList.contains('asc');
-                
-                // ソート方向をリセット
-                table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('asc', 'desc'));
-                
-                rows.sort(function(a, b) {
-                    const aVal = a.children[colIndex]?.textContent.trim() || '';
-                    const bVal = b.children[colIndex]?.textContent.trim() || '';
-                    
-                    // 数値判定
-                    const aNum = parseFloat(aVal.replace(/[^\d.-]/g, ''));
-                    const bNum = parseFloat(bVal.replace(/[^\d.-]/g, ''));
-                    
-                    if (!isNaN(aNum) && !isNaN(bNum)) {
-                        return isAsc ? bNum - aNum : aNum - bNum;
-                    }
-                    return isAsc ? bVal.localeCompare(aVal, 'ja') : aVal.localeCompare(bVal, 'ja');
+                container.insertAdjacentHTML('beforeend', html);
+
+                const toastEl = document.getElementById(id);
+                const toast = new bootstrap.Toast(toastEl, { delay: duration });
+                toast.show();
+
+                toastEl.addEventListener('hidden.bs.toast', function () {
+                    toastEl.remove();
                 });
-                
-                th.classList.add(isAsc ? 'desc' : 'asc');
-                rows.forEach(row => tbody.appendChild(row));
+            };
+
+            // ===== ボタンローディング・二重送信防止 =====
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                if (form.dataset.submitted === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+
+                form.dataset.submitted = 'true';
+                const submitBtn = form.querySelector('button[type="submit"]:not([name]), button[type="submit"][name=""]:not([value]), input[type="submit"]');
+
+                if (submitBtn && !submitBtn.classList.contains('no-loading')) {
+                    const originalHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="btn-text">' + originalHtml + '</span>';
+                    submitBtn.classList.add('is-loading');
+                    submitBtn.disabled = true;
+
+                    // ページ遷移しない場合（Ajax等）は戻す
+                    setTimeout(function () {
+                        if (form.dataset.submitted === 'true') {
+                            form.dataset.submitted = 'false';
+                            submitBtn.classList.remove('is-loading');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalHtml;
+                        }
+                    }, 10000);
+                }
+
+                // ページローディング表示
+                document.getElementById('pageLoading').classList.add('active');
             });
-        });
-        
-        // ===== ページ離脱時のローディング非表示 =====
-        window.addEventListener('pageshow', function() {
-            document.getElementById('pageLoading').classList.remove('active');
-            document.querySelectorAll('form').forEach(function(form) {
-                form.dataset.submitted = 'false';
+
+            // ===== モバイルサイドバー =====
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebarMenu');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (mobileMenuBtn && sidebar && overlay) {
+                mobileMenuBtn.addEventListener('click', function () {
+                    const isOpen = sidebar.classList.contains('show');
+                    sidebar.classList.toggle('show');
+                    overlay.classList.toggle('show');
+                    mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+                });
+
+                overlay.addEventListener('click', function () {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            // ===== キーボードショートカット =====
+            let gKeyPressed = false;
+            let gKeyTimeout = null;
+
+            const shortcuts = {
+                'd': '[data-shortcut="g d"]',
+                'c': '[data-shortcut="g c"]',
+                'a': '[data-shortcut="g a"]',
+                'h': '[data-shortcut="g h"]',
+                'p': '[data-shortcut="g p"]',
+                'b': '[data-shortcut="g b"]',
+                'r': '[data-shortcut="g r"]',
+                't': '[data-shortcut="g t"]'
+            };
+
+            document.addEventListener('keydown', function (e) {
+                // 入力フィールド内では無効
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) {
+                    return;
+                }
+
+                const key = e.key.toLowerCase();
+
+                // ? でショートカットヘルプ表示
+                if (key === '?' || (e.shiftKey && key === '/')) {
+                    e.preventDefault();
+                    const modal = new bootstrap.Modal(document.getElementById('shortcutModal'));
+                    modal.show();
+                    return;
+                }
+
+                // / で検索にフォーカス
+                if (key === '/') {
+                    const searchInput = document.querySelector('input[type="search"], input[name="q"], input[placeholder*="検索"]');
+                    if (searchInput) {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                    return;
+                }
+
+                // G キーの処理
+                if (key === 'g' && !gKeyPressed) {
+                    gKeyPressed = true;
+                    gKeyTimeout = setTimeout(function () {
+                        gKeyPressed = false;
+                    }, 1000);
+                    return;
+                }
+
+                // G + 次のキー
+                if (gKeyPressed && shortcuts[key]) {
+                    e.preventDefault();
+                    const link = document.querySelector(shortcuts[key]);
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                    gKeyPressed = false;
+                    clearTimeout(gKeyTimeout);
+                }
             });
-            document.querySelectorAll('.btn.is-loading').forEach(function(btn) {
-                btn.classList.remove('is-loading');
-                btn.disabled = false;
+
+            // ショートカットヘルプボタン
+            const shortcutHelpBtn = document.getElementById('shortcutHelpBtn');
+            if (shortcutHelpBtn) {
+                shortcutHelpBtn.addEventListener('click', function () {
+                    const modal = new bootstrap.Modal(document.getElementById('shortcutModal'));
+                    modal.show();
+                });
+            }
+
+            // ===== テーブルソート機能 =====
+            document.querySelectorAll('th.sortable').forEach(function (th) {
+                th.addEventListener('click', function () {
+                    const table = th.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    const colIndex = Array.from(th.parentNode.children).indexOf(th);
+                    const isAsc = th.classList.contains('asc');
+
+                    // ソート方向をリセット
+                    table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('asc', 'desc'));
+
+                    rows.sort(function (a, b) {
+                        const aVal = a.children[colIndex]?.textContent.trim() || '';
+                        const bVal = b.children[colIndex]?.textContent.trim() || '';
+
+                        // 数値判定
+                        const aNum = parseFloat(aVal.replace(/[^\d.-]/g, ''));
+                        const bNum = parseFloat(bVal.replace(/[^\d.-]/g, ''));
+
+                        if (!isNaN(aNum) && !isNaN(bNum)) {
+                            return isAsc ? bNum - aNum : aNum - bNum;
+                        }
+                        return isAsc ? bVal.localeCompare(aVal, 'ja') : aVal.localeCompare(bVal, 'ja');
+                    });
+
+                    th.classList.add(isAsc ? 'desc' : 'asc');
+                    rows.forEach(row => tbody.appendChild(row));
+                });
             });
-        });
-        
-    })();
+
+            // ===== ページ離脱時のローディング非表示 =====
+            window.addEventListener('pageshow', function () {
+                document.getElementById('pageLoading').classList.remove('active');
+                document.querySelectorAll('form').forEach(function (form) {
+                    form.dataset.submitted = 'false';
+                });
+                document.querySelectorAll('.btn.is-loading').forEach(function (btn) {
+                    btn.classList.remove('is-loading');
+                    btn.disabled = false;
+                });
+
+                // スクロール位置復元
+                var savedY = sessionStorage.getItem('scrollY');
+                if (savedY) {
+                    window.scrollTo(0, parseInt(savedY));
+                    sessionStorage.removeItem('scrollY');
+                }
+            });
+
+            // ===== ページトップボタン =====
+            var pageTopBtn = document.getElementById('page-top');
+            if (pageTopBtn) {
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 300) {
+                        pageTopBtn.classList.add('visible');
+                    } else {
+                        pageTopBtn.classList.remove('visible');
+                    }
+                });
+
+                pageTopBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // ===== スクロール位置保持リンク =====
+            document.querySelectorAll('a.save-scroll').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    sessionStorage.setItem('scrollY', window.scrollY);
+                });
+            });
+
+        })();
     </script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>
