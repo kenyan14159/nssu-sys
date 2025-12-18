@@ -47,7 +47,7 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/nitsys_test
           SECRET_KEY: test-secret-key-for-ci
-          DEBUG: 'False'
+          DEBUG: 'True'
           USE_SQLITE: 'False'
         run: |
           pytest --cov=. --cov-report=xml --cov-report=term-missing -v
