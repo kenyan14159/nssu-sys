@@ -222,8 +222,9 @@ def athlete_delete(request, pk):
 @login_required
 def athlete_bulk_template(request):
     """選手一括登録用Excelテンプレートダウンロード"""
-    from .athlete_import import generate_athlete_template
     from django.http import HttpResponse
+
+    from .athlete_import import generate_athlete_template
     
     content = generate_athlete_template()
     response = HttpResponse(
@@ -294,8 +295,9 @@ def athlete_bulk_upload(request):
 @login_required
 def athlete_bulk_register(request):
     """選手一括登録（確定処理）"""
-    from .athlete_import import AthleteExcelImporter
     from datetime import date
+
+    from .athlete_import import AthleteExcelImporter
     
     if request.method != 'POST':
         return redirect('accounts:athlete_bulk_upload')

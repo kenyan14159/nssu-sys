@@ -4,6 +4,7 @@
 """
 import csv
 from decimal import Decimal
+
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpResponse
@@ -21,7 +22,10 @@ class EntryAdminForm(forms.ModelForm):
     
     class Meta:
         model = Entry
-        fields = '__all__'
+        fields = [
+            'athlete', 'race', 'registered_by', 'declared_time', 'personal_best',
+            'status', 'note', 'moved_from_ncg', 'original_ncg_race'
+        ]
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,7 +47,10 @@ class EntryGroupAdminForm(forms.ModelForm):
     
     class Meta:
         model = EntryGroup
-        fields = '__all__'
+        fields = [
+            'organization', 'competition', 'registered_by', 'entries', 
+            'total_amount', 'status'
+        ]
         widgets = {
             'total_amount': forms.NumberInput(attrs={'step': '2000', 'min': '0'}),
         }

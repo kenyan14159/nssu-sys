@@ -4,6 +4,7 @@
 振込明細画像のサムネイル表示、ワンクリック承認機能付き
 """
 import csv
+
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpResponse
