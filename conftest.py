@@ -13,6 +13,14 @@ from competitions.models import Competition, Race
 User = get_user_model()
 
 
+@pytest.fixture(autouse=True)
+def disable_ssl_redirect(settings):
+    """テスト中はSSLリダイレクトを無効化"""
+    settings.SECURE_SSL_REDIRECT = False
+    settings.SESSION_COOKIE_SECURE = False
+    settings.CSRF_COOKIE_SECURE = False
+
+
 @pytest.fixture
 def organization(db):
     """テスト用団体"""
