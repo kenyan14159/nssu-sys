@@ -1,0 +1,21 @@
+{% comment %}
+点呼トグルボタン（HTMXによる部分更新対応）
+ページリロードなしで点呼状態を切り替え可能
+{% endcomment %}
+<div id="checkin-toggle-{{ assignment.pk }}" class="d-inline-block">
+    {% if assignment.status == 'dns' %}
+    <span class="badge bg-secondary">DNS</span>
+    {% elif assignment.checked_in %}
+    <button type="button" class="btn btn-sm btn-success" hx-post="{% url 'heats:toggle_checkin' assignment.pk %}"
+        hx-target="#checkin-toggle-{{ assignment.pk }}" hx-swap="outerHTML"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' title="点呼を取り消す">
+        <i class="bi bi-check-circle-fill"></i> 点呼済
+    </button>
+    {% else %}
+    <button type="button" class="btn btn-sm btn-outline-primary"
+        hx-post="{% url 'heats:toggle_checkin' assignment.pk %}" hx-target="#checkin-toggle-{{ assignment.pk }}"
+        hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' title="点呼する">
+        <i class="bi bi-circle"></i> 未点呼
+    </button>
+    {% endif %}
+</div>

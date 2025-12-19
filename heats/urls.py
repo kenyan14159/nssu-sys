@@ -19,6 +19,7 @@ urlpatterns = [
     path('competition/<int:competition_pk>/checkin/status/', views.checkin_status_api, name='checkin_status_api'),
     path('competition/<int:competition_pk>/checkin/stats/', views.checkin_stats_partial, name='checkin_stats_partial'),
     path('assignment/<int:assignment_pk>/checkin/', views.checkin, name='checkin'),
+    path('assignment/<int:assignment_pk>/toggle/', views.toggle_checkin, name='toggle_checkin'),
     path('assignment/<int:assignment_pk>/dns/', views.mark_dns, name='dns'),
     # 一括処理
     path('competition/<int:competition_pk>/generate-all/', views.generate_all_heats, name='generate_all'),

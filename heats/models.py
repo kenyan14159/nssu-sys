@@ -163,30 +163,26 @@ class HeatGenerator:
             capacity = race.heat_capacity
             num_heats = (total_entries + capacity - 1) // capacity  # 切り上げ
         
-        # 組分け
-        heats = []
-        current_heat = None
-        bib_number = 0
+        # 組を一括作成（bulk_create最適化）
+        heats_to_create = [
+            Heat(race=race, heat_number=i + 1)
+            for i in range(num_heats)
+        ]
+        heats = Heat.objects.bulk_create(heats_to_create)
         
+        # 組編成を一括作成（bulk_create最適化）
+        assignments_to_create = []
         for i, entry in enumerate(entries):
-            # 新しい組を作成
-            if i % capacity == 0:
-                heat_number = (i // capacity) + 1
-                current_heat = Heat.objects.create(
-                    race=race,
-                    heat_number=heat_number
+            heat_index = i // capacity
+            bib_number = (i % capacity) + 1
+            assignments_to_create.append(
+                HeatAssignment(
+                    heat=heats[heat_index],
+                    entry=entry,
+                    bib_number=bib_number
                 )
-                heats.append(current_heat)
-                bib_number = 0
-            
-            bib_number += 1
-            
-            # 組編成を作成
-            HeatAssignment.objects.create(
-                heat=current_heat,
-                entry=entry,
-                bib_number=bib_number
             )
+        HeatAssignment.objects.bulk_create(assignments_to_create)
         
         return heats
     
@@ -219,12 +215,15 @@ class HeatGenerator:
     
     @classmethod
     def reorder_bib_numbers(cls, heat):
-        """腰ナンバーを1から連番に振り直す"""
-        assignments = HeatAssignment.objects.filter(heat=heat).order_by('bib_number')
+        """腰ナンバーを1から連番に振り直す（bulk_update最適化）"""
+        assignments = list(HeatAssignment.objects.filter(heat=heat).order_by('bib_number'))
+        updates = []
         for i, assignment in enumerate(assignments, start=1):
             if assignment.bib_number != i:
                 assignment.bib_number = i
-                assignment.save()
+                updates.append(assignment)
+        if updates:
+            HeatAssignment.objects.bulk_update(updates, ['bib_number'])
     
     @classmethod
     @transaction.atomic
@@ -264,15 +263,15 @@ class HeatGenerator:
         # 一般種目に移動する選手
         overflow_entries = entries[ncg_capacity:]
         
-        moved_entries = []
-        for entry in overflow_entries:
-            # 元のNCG種目を記録
-            entry.original_ncg_race = ncg_race
-            entry.moved_from_ncg = True
-            # 種目を一般種目に変更
-            entry.race = fallback_race
-            entry.save()
-            moved_entries.append(entry)
+        # 一括更新で最適化（ループ内save()を排除）
+        if overflow_entries:
+            overflow_pks = [e.pk for e in overflow_entries]
+            Entry.objects.filter(pk__in=overflow_pks).update(
+                original_ncg_race=ncg_race,
+                moved_from_ncg=True,
+                race=fallback_race
+            )
+        moved_entries = overflow_entries
         
         return {
             'ncg_entries': ncg_entries,
@@ -391,7 +390,7 @@ class BibNumberGenerator:
     @transaction.atomic
     def assign_bib_numbers(cls, competition):
         """
-        大会全体のゼッケン番号を採番
+        大会全体のゼッケン番号を採番（bulk_update最適化）
         
         Args:
             competition: 大会オブジェクト
@@ -415,30 +414,39 @@ class BibNumberGenerator:
             is_active=True
         ).order_by('-is_ncg', 'display_order')
         
+        # 全ての更新を収集
+        all_updates = []
+        
         for race in races:
             key = (race.gender, race.is_ncg)
             current_bib = counters.get(key, 4000)
+            start_bib = current_bib
             
             # 組ごとに処理
-            heats = race.heats.order_by('heat_number')
+            heats = race.heats.order_by('heat_number').prefetch_related('assignments')
             
             for heat in heats:
-                assignments = heat.assignments.order_by('bib_number')
+                assignments = list(heat.assignments.order_by('bib_number'))
                 
                 for assignment in assignments:
                     # ゼッケン番号を更新
                     assignment.race_bib_number = current_bib
-                    assignment.save()
+                    all_updates.append(assignment)
                     current_bib += 1
             
             # カウンター更新
             counters[key] = current_bib
             
-            results['assigned'].append({
-                'race': race.name,
-                'start_bib': cls.BIB_RANGES.get(key, 4000),
-                'end_bib': current_bib - 1,
-            })
+            if current_bib > start_bib:
+                results['assigned'].append({
+                    'race': race.name,
+                    'start_bib': start_bib,
+                    'end_bib': current_bib - 1,
+                })
+        
+        # 一括更新
+        if all_updates:
+            HeatAssignment.objects.bulk_update(all_updates, ['race_bib_number'])
         
         return results
     

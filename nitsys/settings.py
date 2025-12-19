@@ -39,6 +39,26 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
+# =============================================================================
+# 本番環境のセキュリティチェック（フェイルセーフ）
+# =============================================================================
+if not DEBUG:
+    from django.core.exceptions import ImproperlyConfigured
+    
+    # 必須環境変数のチェック
+    REQUIRED_ENV_VARS = ['SECRET_KEY', 'DATABASE_URL']
+    missing = [var for var in REQUIRED_ENV_VARS if not config(var, default='')]
+    if missing:
+        raise ImproperlyConfigured(
+            f"本番環境では以下の環境変数が必須です: {', '.join(missing)}"
+        )
+    
+    # SECRET_KEYがデフォルト値のままでないかチェック
+    if SECRET_KEY == 'django-insecure-dev-key-change-in-production':
+        raise ImproperlyConfigured(
+            "本番環境ではSECRET_KEYを安全な値に設定してください"
+        )
+
 # Application definition
 INSTALLED_APPS = [
     # Jazzmin must be before django.contrib.admin

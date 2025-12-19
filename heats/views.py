@@ -327,6 +327,31 @@ def mark_dns(request, assignment_pk):
 @login_required
 @admin_required
 @require_POST
+def toggle_checkin(request, assignment_pk):
+    """点呼トグル（HTMX部分更新対応）"""
+    assignment = get_object_or_404(
+        HeatAssignment.objects.select_related('entry__athlete'),
+        pk=assignment_pk
+    )
+    
+    # 状態をトグル
+    if assignment.checked_in:
+        assignment.checked_in = False
+        assignment.checked_in_at = None
+    else:
+        assignment.checked_in = True
+        assignment.checked_in_at = timezone.now()
+    assignment.save()
+    
+    # HTMX用のパーシャルテンプレートを返す
+    return render(request, 'heats/partials/checkin_toggle.html', {
+        'assignment': assignment,
+    })
+
+
+@login_required
+@admin_required
+@require_POST
 def generate_all_heats(request, competition_pk):
     """大会全体の組分けを生成（NCG処理を含む）"""
     competition = get_object_or_404(Competition, pk=competition_pk)
