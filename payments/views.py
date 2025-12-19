@@ -15,6 +15,7 @@ from entries.models import EntryGroup
 
 from .forms import PaymentReviewForm, PaymentUploadForm
 from .models import BankAccount, ParkingRequest, Payment
+from .notifications import send_payment_approved_email, send_payment_rejected_email
 
 security_logger = logging.getLogger('security')
 
@@ -157,10 +158,20 @@ def payment_review(request, pk):
             with transaction.atomic():
                 if action == 'approve':
                     payment.approve(request.user)
-                    messages.success(request, '入金を承認しました。')
+                    # メール送信（失敗してもトランザクションは継続）
+                    email_sent = send_payment_approved_email(payment)
+                    if email_sent:
+                        messages.success(request, '入金を承認し、確認メールを送信しました。')
+                    else:
+                        messages.success(request, '入金を承認しました。（メール送信に失敗しました）')
                 else:
                     payment.reject(request.user, note)
-                    messages.warning(request, '入金を却下しました。')
+                    # メール送信（失敗してもトランザクションは継続）
+                    email_sent = send_payment_rejected_email(payment, note)
+                    if email_sent:
+                        messages.warning(request, '入金を却下し、通知メールを送信しました。')
+                    else:
+                        messages.warning(request, '入金を却下しました。（メール送信に失敗しました）')
             
             return redirect('payments:admin_list')
     else:
@@ -233,6 +244,9 @@ def force_approve(request, entry_group_pk):
         # 強制承認実行
         payment.force_approve(request.user, note)
         
+        # メール送信（強制承認の場合も確認メールを送信）
+        email_sent = send_payment_approved_email(payment)
+        
         # セキュリティログ
         security_logger.warning(
             f"強制承認実行: entry_group={entry_group_pk}, "
@@ -240,11 +254,17 @@ def force_approve(request, entry_group_pk):
             f"user={request.user.email}, note={note}"
         )
         
-        messages.success(
-            request,
-            f'{entry_group.organization.name if entry_group.organization else "個人"}'
-            f'の支払いを強制承認しました。'
-        )
+        org_name = entry_group.organization.name if entry_group.organization else "個人"
+        if email_sent:
+            messages.success(
+                request,
+                f'{org_name}の支払いを強制承認し、確認メールを送信しました。'
+            )
+        else:
+            messages.success(
+                request,
+                f'{org_name}の支払いを強制承認しました。'
+            )
         
         referer = request.META.get('HTTP_REFERER')
         if referer and 'force_approve_search' in referer:

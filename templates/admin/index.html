@@ -3,7 +3,7 @@
 
 {% block content %}
 <div id="content-main">
-    
+
     <!-- クイックスタートガイド -->
     <div class="quick-start-section">
         <div class="section-header">
@@ -51,7 +51,7 @@
             </li>
         </ol>
     </div>
-    
+
     <div class="dashboard-grid">
         <!-- よく使う機能 -->
         <div class="dashboard-card">
@@ -105,7 +105,7 @@
                 </a>
             </div>
         </div>
-        
+
         <!-- ヘルプ・マニュアル -->
         <div class="dashboard-card">
             <div class="card-header">
@@ -119,7 +119,8 @@
             <ul class="help-links">
                 <li>
                     <a href="/admin/guide/">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
@@ -128,7 +129,8 @@
                 </li>
                 <li>
                     <a href="/admin/guide/#faq">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -138,8 +140,11 @@
                 </li>
                 <li>
                     <a href="/admin/guide/#troubleshooting">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                            </path>
                         </svg>
                         トラブルシューティング
                     </a>
@@ -147,7 +152,7 @@
             </ul>
         </div>
     </div>
-    
+
     <!-- 操作のヒント -->
     <div class="tips-section">
         <div class="section-header">
@@ -179,7 +184,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- クイック追加セクション -->
     <div class="quick-add-section">
         <div class="section-header">
@@ -298,40 +303,9 @@
             </a>
         </div>
     </div>
-    
+
     <!-- 標準のダッシュボード内容 -->
     {{ block.super }}
-    
-</div>
-{% endblock %}
 
-{% block sidebar %}
-{{ block.super }}
-<!-- サイドバーにヘルプリンクを追加 -->
-<div class="sidebar-help-card">
-    <div class="sidebar-help-header">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 16v-4"></path>
-            <path d="M12 8h.01"></path>
-        </svg>
-        <span>サポート</span>
-    </div>
-    <div class="sidebar-help-links">
-        <a href="/admin/guide/">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-            操作マニュアル
-        </a>
-        <a href="mailto:support@nitsys.jp">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            お問い合わせ
-        </a>
-    </div>
 </div>
 {% endblock %}

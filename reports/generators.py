@@ -124,9 +124,15 @@ class PDFGenerator:
             '/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc',
             '/System/Library/Fonts/Hiragino Sans GB.ttc',
             '/Library/Fonts/Arial Unicode.ttf',
-            # Linux (Ubuntu/Debian)
-            '/usr/share/fonts/truetype/fonts-japanese-gothic.ttf',
+            # Linux (Ubuntu/Debian) - Noto CJK（apt install fonts-noto-cjkでインストール）
             '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
+            '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc',
+            '/usr/share/fonts/noto-cjk/NotoSansCJKjp-Regular.otf',
+            '/usr/share/fonts/opentype/noto/NotoSansCJKjp-Regular.otf',
+            # Render/Heroku Buildpack（Aptfileからインストール）
+            '/app/.fonts/NotoSansCJKjp-Regular.otf',
+            # その他のLinuxフォント
+            '/usr/share/fonts/truetype/fonts-japanese-gothic.ttf',
             '/usr/share/fonts/truetype/takao-gothic/TakaoPGothic.ttf',
             '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
             # IPAフォント（手動インストール時）
@@ -1059,3 +1065,174 @@ class ResultSheetPDFGenerator:
             result += kana_map.get(char, char)
         return result
 
+
+class EntryConfirmationPDFGenerator:
+    """
+    申込確認書PDF生成（参加者向け）
+    NANS21V Web登録サービスの「申込一覧表」に相当する機能
+    """
+    
+    @classmethod
+    def generate_confirmation_pdf(cls, competition, entries, organization=None, user=None):
+        """
+        申込確認書PDF生成
+        
+        Args:
+            competition: 大会オブジェクト
+            entries: エントリーのQuerySet
+            organization: 団体（団体申込の場合）
+            user: ユーザー（個人申込の場合）
+        
+        Returns:
+            BytesIO: PDFファイルのバッファ
+        """
+        buffer = io.BytesIO()
+        font_name = PDFGenerator._setup_fonts()
+        
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=15*mm,
+            leftMargin=15*mm,
+            topMargin=20*mm,
+            bottomMargin=20*mm
+        )
+        
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # スタイル定義
+        title_style = ParagraphStyle(
+            'ConfirmationTitle',
+            parent=styles['Heading1'],
+            fontName=font_name,
+            fontSize=18,
+            alignment=1,  # CENTER
+            spaceAfter=10*mm
+        )
+        
+        header_style = ParagraphStyle(
+            'HeaderStyle',
+            parent=styles['Normal'],
+            fontName=font_name,
+            fontSize=11,
+            spaceAfter=3*mm
+        )
+        
+        # タイトル
+        elements.append(Paragraph("エントリー申込確認書", title_style))
+        
+        # 大会情報
+        elements.append(Paragraph(
+            f"<b>大会名:</b> {competition.name}",
+            header_style
+        ))
+        elements.append(Paragraph(
+            f"<b>開催日:</b> {competition.event_date.strftime('%Y年%m月%d日')}",
+            header_style
+        ))
+        
+        # 申込者情報
+        applicant_name = ''
+        if organization:
+            applicant_name = organization.name
+        elif user:
+            applicant_name = user.full_name
+        
+        elements.append(Paragraph(
+            f"<b>申込者:</b> {applicant_name}",
+            header_style
+        ))
+        elements.append(Paragraph(
+            f"<b>出力日時:</b> {datetime.now().strftime('%Y年%m月%d日 %H:%M')}",
+            header_style
+        ))
+        elements.append(Spacer(1, 10*mm))
+        
+        # エントリー一覧テーブル
+        table_data = [['No.', '種目', '選手名', 'フリガナ', '申告タイム', '金額']]
+        
+        total_amount = 0
+        entry_fee = competition.entry_fee or 2000
+        
+        for i, entry in enumerate(entries, 1):
+            athlete = entry.athlete
+            
+            table_data.append([
+                str(i),
+                entry.race.name,
+                athlete.full_name,
+                athlete.full_name_kana or '',
+                entry.declared_time_display,
+                f"¥{entry_fee:,}"
+            ])
+            total_amount += entry_fee
+        
+        # 合計行
+        table_data.append(['', '', '', '', '合計', f"¥{total_amount:,}"])
+        
+        # テーブル作成
+        col_widths = [12*mm, 40*mm, 45*mm, 45*mm, 25*mm, 25*mm]
+        table = Table(table_data, colWidths=col_widths)
+        
+        table.setStyle(TableStyle([
+            ('FONT', (0, 0), (-1, -1), font_name, 9),
+            ('FONT', (0, 0), (-1, 0), font_name, 9),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.2, 0.3, 0.5)),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('ALIGN', (0, 1), (0, -1), 'CENTER'),
+            ('ALIGN', (4, 1), (-1, -1), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('GRID', (0, 0), (-1, -2), 0.5, colors.grey),
+            ('LINEABOVE', (0, -1), (-1, -1), 1, colors.black),
+            ('FONT', (0, -1), (-1, -1), font_name, 10),
+            ('FONTNAME', (4, -1), (-1, -1), font_name),
+            ('ROWHEIGHTS', (0, 0), (-1, -1), 7*mm),
+        ]))
+        
+        elements.append(table)
+        elements.append(Spacer(1, 15*mm))
+        
+        # サマリー
+        summary_style = ParagraphStyle(
+            'SummaryStyle',
+            parent=styles['Normal'],
+            fontName=font_name,
+            fontSize=12,
+            alignment=2,  # RIGHT
+            spaceAfter=5*mm
+        )
+        
+        elements.append(Paragraph(
+            f"<b>エントリー件数:</b> {entries.count()}件",
+            summary_style
+        ))
+        elements.append(Paragraph(
+            f"<b>合計金額:</b> ¥{total_amount:,}",
+            summary_style
+        ))
+        
+        elements.append(Spacer(1, 20*mm))
+        
+        # 注意事項
+        note_style = ParagraphStyle(
+            'NoteStyle',
+            parent=styles['Normal'],
+            fontName=font_name,
+            fontSize=9,
+            spaceAfter=2*mm
+        )
+        
+        elements.append(Paragraph("【ご注意】", note_style))
+        notes = [
+            "・本書はエントリー内容の確認用です。入金確認後に正式に受理されます。",
+            "・内容に誤りがある場合は、エントリー期間内に修正してください。",
+            "・お問い合わせは大会運営事務局までご連絡ください。",
+        ]
+        for note in notes:
+            elements.append(Paragraph(note, note_style))
+        
+        doc.build(elements)
+        buffer.seek(0)
+        return buffer

@@ -497,3 +497,111 @@ def generate_athlete_template() -> bytes:
             worksheet.column_dimensions[col].width = width
     
     return output.getvalue()
+
+
+def generate_jaaf_csv_template() -> bytes:
+    """
+    JAAF形式（NANS21V互換）のCSVテンプレートを生成
+    
+    カラム構成はNANS21V Web登録サービスのフォーマットに準拠:
+    年度, JAAF ID, 氏名（姓）, 氏名（名）, 登録番号（ナンバー）, フリガナ（姓）, フリガナ（名）,
+    英字（姓）, 英字（名）, 国籍, 性別, 登録都道府県番号, 生年月日, 学年, 団体区分
+    
+    Returns:
+        CSVファイルのバイトデータ
+    """
+    import csv
+    from datetime import datetime
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # ヘッダー（NANS21V形式）
+    headers = [
+        '年度',
+        'JAAF ID',
+        '氏名（姓）',
+        '氏名（名）',
+        '登録番号（ナンバー）',
+        'ﾌﾘｶﾞﾅ（姓）',
+        'ﾌﾘｶﾞﾅ（名）',
+        '英字（姓）',
+        '英字（名）',
+        '国籍',
+        '性別',
+        '登録都道府県番号',
+        '登録都道府県名',  # 未使用だが互換性のため
+        '団体UID',  # 未使用
+        '団体ID',  # 未使用
+        '団体名',  # 未使用
+        '団体名略称1',  # 未使用
+        '団体名略称2',  # 未使用
+        '生年月日',
+        '旧団体コード',  # 未使用
+        '備考',  # 未使用
+        '学年',
+        '団体区分',
+    ]
+    writer.writerow(headers)
+    
+    # サンプルデータ（2行）
+    current_year = datetime.now().year
+    sample_data = [
+        [
+            current_year,  # 年度
+            '12345678',    # JAAF ID
+            '山田',        # 氏名（姓）
+            '太郎',        # 氏名（名）
+            'A12345',      # 登録番号
+            'ヤマダ',      # フリガナ（姓）
+            'タロウ',      # フリガナ（名）
+            'YAMADA',      # 英字（姓）
+            'Taro',        # 英字（名）
+            'JPN',         # 国籍
+            '男子',        # 性別
+            '13',          # 登録都道府県番号（東京）
+            '',            # 登録都道府県名
+            '',            # 団体UID
+            '',            # 団体ID
+            '',            # 団体名
+            '',            # 団体名略称1
+            '',            # 団体名略称2
+            '2000/04/01',  # 生年月日
+            '',            # 旧団体コード
+            '',            # 備考
+            '3',           # 学年
+            '大学',        # 団体区分
+        ],
+        [
+            current_year,
+            '87654321',
+            '鈴木',
+            '花子',
+            'B67890',
+            'スズキ',
+            'ハナコ',
+            'SUZUKI',
+            'Hanako',
+            'JPN',
+            '女子',
+            '14',  # 神奈川
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '2001/08/15',
+            '',
+            '',
+            '2',
+            '大学',
+        ],
+    ]
+    
+    for row in sample_data:
+        writer.writerow(row)
+    
+    # Shift_JISでエンコード（Excel互換）
+    csv_content = output.getvalue()
+    return csv_content.encode('utf-8-sig')  # BOM付きUTF-8でExcel互換

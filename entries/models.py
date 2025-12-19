@@ -222,6 +222,13 @@ class EntryGroup(models.Model):
         default='pending'
     )
     
+    # 一時保存フラグ（NANS21V参考機能）
+    is_draft = models.BooleanField(
+        '下書き',
+        default=True,
+        help_text='一時保存の場合はTrue、確定処理後はFalse'
+    )
+    
     # メタ情報
     created_at = models.DateTimeField('申込日時', auto_now_add=True)
     updated_at = models.DateTimeField('更新日時', auto_now=True)

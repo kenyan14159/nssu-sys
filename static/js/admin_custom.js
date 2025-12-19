@@ -6,6 +6,26 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // =========================================================================
+    // 0. サイドバーをデフォルトで展開状態にする
+    // =========================================================================
+    function expandSidebarByDefault() {
+        // サイドバーを折りたたんだ状態のクラスを削除
+        const body = document.body;
+        if (body.classList.contains('sidebar-collapse')) {
+            body.classList.remove('sidebar-collapse');
+        }
+        
+        // LocalStorageのサイドバー状態をクリア（常に展開）
+        localStorage.removeItem('jazzmin.sidebar-toggle');
+        localStorage.removeItem('jazzmin:sidebar-toggle');
+        localStorage.removeItem('adminlte-sidebar-toggle');
+    }
+    
+    // サイドバー展開を実行
+    expandSidebarByDefault();
+    
+    
+    // =========================================================================
     // 0-1. インライン追加ボタンの修正（Jazzmin互換性対策）
     // =========================================================================
     function fixInlineAddButtons() {

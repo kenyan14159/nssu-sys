@@ -5,7 +5,28 @@ Django settings for nitsys project.
 
 from pathlib import Path
 
+import sentry_sdk
 from decouple import Csv, config
+from sentry_sdk.integrations.django import DjangoIntegration
+
+# =============================================================================
+# Sentry Error Monitoring (本番環境でのエラー通知)
+# =============================================================================
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        # パフォーマンス監視（本番で10%のトランザクションをサンプリング）
+        traces_sample_rate=0.1,
+        # セッションリプレイ（オプション）
+        profiles_sample_rate=0.1,
+        # 送信するPII情報
+        send_default_pii=False,
+        # 環境名
+        environment=config('SENTRY_ENVIRONMENT', default='production'),
+    )
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

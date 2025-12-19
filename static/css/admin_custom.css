@@ -47,16 +47,26 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* サイドバーの幅を固定（開いている時・閉じている時の両方） */
-.sidebar-mini .main-sidebar,
-.sidebar-mini.sidebar-collapse .main-sidebar:hover {
-    width: 250px;
+/* ハンバーガーメニューボタンを非表示にする */
+[data-widget="pushmenu"],
+.navbar-nav .nav-item a[data-widget="pushmenu"] {
+    display: none !important;
 }
 
-/* サイドバー閉じている時の幅 */
-.sidebar-mini.sidebar-collapse .main-sidebar {
-    width: 60px;
+/* サイドバーを常に展開状態に固定 */
+.sidebar-mini .main-sidebar,
+.sidebar-mini.sidebar-collapse .main-sidebar,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover {
+    width: 250px !important;
 }
+
+/* サイドバー閉じ状態のクラスを無効化 */
+.sidebar-mini.sidebar-collapse .content-wrapper,
+.sidebar-mini.sidebar-collapse .main-footer,
+.sidebar-mini.sidebar-collapse .main-header {
+    margin-left: 250px !important;
+}
+
 
 /* サイドバーアイテムの基本スタイル */
 .nav-sidebar .nav-link {
@@ -223,8 +233,8 @@ input[type="submit"]:hover {
     margin-bottom: 20px;
 }
 
-.form-row > div,
-.field-box > div {
+.form-row>div,
+.field-box>div {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -352,9 +362,9 @@ input[type="number"] {
     max-width: 600px;
 }
 
-.form-row.field-last_name.field-first_name > div,
-.form-row.field-last_name_kana.field-first_name_kana > div,
-.form-row.field-last_name_en.field-first_name_en > div {
+.form-row.field-last_name.field-first_name>div,
+.form-row.field-last_name_kana.field-first_name_kana>div,
+.form-row.field-last_name_en.field-first_name_en>div {
     display: flex;
     flex-direction: column;
 }
@@ -574,7 +584,7 @@ fieldset .description {
 }
 
 /* descriptionの後の最初のフォーム行 */
-fieldset .description + .form-row {
+fieldset .description+.form-row {
     margin-top: 20px;
 }
 
@@ -874,11 +884,11 @@ fieldset .description + .form-row {
     .nav-sidebar .nav-link {
         padding: 12px 16px;
     }
-    
+
     #searchbar input[type="text"] {
         min-width: 200px;
     }
-    
+
     .actions {
         flex-wrap: wrap;
     }
@@ -888,11 +898,18 @@ fieldset .description + .form-row {
    アニメーション
    ----------------------------------------------------------------------------- */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.content-wrapper > .content {
+.content-wrapper>.content {
     animation: fadeIn 0.2s ease;
 }
 
@@ -1205,10 +1222,19 @@ fieldset .description + .form-row {
 
 /* サイドバーヘルプカード */
 .sidebar-help-card {
-    margin: 16px;
+    margin: 16px 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     overflow: hidden;
+    max-width: calc(100% - 16px);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* サイドバー閉じた時はヘルプカードを非表示 */
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .sidebar-help-card {
+    display: none;
 }
 
 .sidebar-help-header {
@@ -1741,7 +1767,7 @@ fieldset.collapsed .field-box {
     display: block;
 }
 
-.change-form .form-row > div {
+.change-form .form-row>div {
     display: block;
 }
 
@@ -1917,7 +1943,7 @@ fieldset.collapsed .field-box {
 }
 
 /* Breadcrumb */
-.breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb-item+.breadcrumb-item::before {
     content: ">";
     color: var(--gray-400);
     padding: 0 8px;
@@ -1937,7 +1963,7 @@ fieldset.collapsed .field-box {
     #content-main form {
         max-width: 900px;
     }
-    
+
     .form-row input[type="text"],
     .form-row input[type="email"],
     .form-row input[type="url"],
@@ -1945,7 +1971,7 @@ fieldset.collapsed .field-box {
     .form-row select {
         max-width: 450px;
     }
-    
+
     .form-row textarea {
         max-width: 650px;
     }
@@ -2037,12 +2063,12 @@ input[type="number"] {
 }
 
 /* フィールドセット内のフォーム行間隔 */
-fieldset .form-row + .form-row {
+fieldset .form-row+.form-row {
     margin-top: 16px;
 }
 
 /* ラベルの縦揃え */
-.form-row > label {
+.form-row>label {
     min-width: 140px;
     max-width: 200px;
 }
@@ -2160,7 +2186,7 @@ fieldset .form-row + .form-row {
 }
 
 /* メイン画面の余白 */
-.content-wrapper > .content {
+.content-wrapper>.content {
     padding: 16px 24px;
 }
 
@@ -2193,7 +2219,7 @@ fieldset .form-row + .form-row {
 }
 
 /* コンテンツエリアの上余白 */
-.content-wrapper > .content {
+.content-wrapper>.content {
     padding-top: 8px;
 }
 
@@ -2207,7 +2233,7 @@ fieldset .form-row + .form-row {
     width: 250px !important;
 }
 
-.main-sidebar ~ .content-wrapper {
+.main-sidebar~.content-wrapper {
     margin-left: 250px;
 }
 
@@ -2216,7 +2242,7 @@ fieldset .form-row + .form-row {
     width: 60px !important;
 }
 
-.sidebar-collapse .main-sidebar ~ .content-wrapper {
+.sidebar-collapse .main-sidebar~.content-wrapper {
     margin-left: 60px;
 }
 
@@ -2234,8 +2260,8 @@ fieldset .form-row + .form-row {
     .content-wrapper {
         padding-right: 12px;
     }
-    
-    .content-wrapper > .content {
+
+    .content-wrapper>.content {
         padding-right: 16px;
         padding-left: 16px;
         max-width: 100%;
@@ -2267,7 +2293,7 @@ fieldset .form-row + .form-row {
 }
 
 /* サイドバーのapp-listの余白 */
-.nav-sidebar > .nav-item > .nav-treeview {
+.nav-sidebar>.nav-item>.nav-treeview {
     margin-bottom: 8px;
 }
 

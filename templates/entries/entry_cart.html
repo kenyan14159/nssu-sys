@@ -7,7 +7,8 @@
 <div class="page-header">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'competitions:detail' competition.pk %}">{{ competition.name
+                    }}</a></li>
             <li class="breadcrumb-item active">エントリー確認</li>
         </ol>
     </nav>
@@ -20,12 +21,22 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>エントリー一覧（{{ entries.count }}件）</span>
-                <a href="{% url 'competitions:detail' competition.pk %}" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-plus"></i> 追加する
-                </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="TableCopy.copyEntries()"
+                        title="Excelに貼り付け可能">
+                        <i class="bi bi-clipboard"></i> コピー
+                    </button>
+                    <a href="{% url 'entries:confirmation_pdf' competition_pk=competition.pk %}"
+                        class="btn btn-sm btn-outline-secondary" title="申込確認書のダウンロード">
+                        <i class="bi bi-file-pdf"></i> PDF
+                    </a>
+                    <a href="{% url 'competitions:detail' competition.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus"></i> 追加する
+                    </a>
+                </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover mb-0" id="entry-table">
                     <thead>
                         <tr>
                             <th>種目</th>
@@ -61,7 +72,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4">
         <div class="card border-primary">
             <div class="card-header bg-primary text-white">
@@ -80,23 +91,36 @@
                         </tr>
                     </tbody>
                 </table>
-                
+
                 <div class="bg-light rounded-3 p-3 text-center mb-3">
                     <div class="text-muted small mb-1">合計金額</div>
                     <div class="display-6 fw-bold text-primary">¥{{ total_amount|intcomma }}</div>
                 </div>
-                
+
                 <form action="{% url 'entries:confirm' competition_pk=competition.pk %}" method="post">
                     {% csrf_token %}
-                    <div class="d-grid">
+                    <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="bi bi-arrow-right-circle"></i> 確認して進む
                         </button>
                     </div>
                 </form>
+
+                <!-- 一時保存ボタン -->
+                <form action="{% url 'entries:save_draft' competition_pk=competition.pk %}" method="post" class="mt-2">
+                    {% csrf_token %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="bi bi-cloud-arrow-up"></i> 一時保存して後で続ける
+                        </button>
+                    </div>
+                    <p class="text-muted small mt-1 mb-0">
+                        <i class="bi bi-info-circle"></i> 一時保存すると、後から続きを入力できます。
+                    </p>
+                </form>
             </div>
         </div>
-        
+
         <div class="card mt-3 border-info">
             <div class="card-header bg-info bg-opacity-10 text-info">
                 <i class="bi bi-info-circle-fill"></i> お支払い方法

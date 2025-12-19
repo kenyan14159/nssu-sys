@@ -1,6 +1,6 @@
 // Nit-Sys JavaScript Utilities
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(function (tooltipTriggerEl) {
@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Auto-dismiss alerts after 5 seconds
-    document.querySelectorAll('.alert-dismissible').forEach(function(alert) {
-        setTimeout(function() {
+    document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
+        setTimeout(function () {
             var bsAlert = new bootstrap.Alert(alert);
             bsAlert.close();
         }, 5000);
@@ -25,35 +25,35 @@ document.addEventListener('DOMContentLoaded', function() {
 // Time format utilities
 const TimeUtils = {
     // Convert mm:ss.xx format to seconds
-    parseTime: function(timeStr) {
+    parseTime: function (timeStr) {
         if (!timeStr) return null;
-        
+
         const match = timeStr.match(/^(\d{1,2}):(\d{2})\.(\d{2})$/);
         if (!match) return null;
-        
+
         const minutes = parseInt(match[1], 10);
         const seconds = parseInt(match[2], 10);
         const centiseconds = parseInt(match[3], 10);
-        
+
         return minutes * 60 + seconds + centiseconds / 100;
     },
-    
+
     // Convert seconds to mm:ss.xx format
-    formatTime: function(totalSeconds) {
+    formatTime: function (totalSeconds) {
         if (totalSeconds === null || totalSeconds === undefined) return '--:--:--';
-        
+
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = Math.floor(totalSeconds % 60);
         const centiseconds = Math.round((totalSeconds % 1) * 100);
-        
+
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
     },
-    
+
     // Validate time input
-    validateTimeInput: function(input) {
+    validateTimeInput: function (input) {
         const value = input.value;
         const isValid = /^\d{1,2}:\d{2}\.\d{2}$/.test(value);
-        
+
         if (isValid || value === '') {
             input.classList.remove('is-invalid');
             input.classList.add('is-valid');
@@ -61,7 +61,7 @@ const TimeUtils = {
             input.classList.remove('is-valid');
             input.classList.add('is-invalid');
         }
-        
+
         return isValid;
     }
 };
@@ -69,8 +69,8 @@ const TimeUtils = {
 // Entry Cart Management
 const EntryCart = {
     items: [],
-    
-    init: function() {
+
+    init: function () {
         // Load from session storage if available
         const saved = sessionStorage.getItem('entryCart');
         if (saved) {
@@ -78,18 +78,18 @@ const EntryCart = {
         }
         this.render();
     },
-    
-    add: function(athleteId, athleteName, raceId, raceName, declaredTime) {
+
+    add: function (athleteId, athleteName, raceId, raceName, declaredTime) {
         // Check if already in cart
-        const exists = this.items.find(item => 
+        const exists = this.items.find(item =>
             item.athleteId === athleteId && item.raceId === raceId
         );
-        
+
         if (exists) {
             this.showToast('既にエントリー済みです', 'warning');
             return false;
         }
-        
+
         this.items.push({
             athleteId,
             athleteName,
@@ -97,46 +97,46 @@ const EntryCart = {
             raceName,
             declaredTime
         });
-        
+
         this.save();
         this.render();
         this.showToast('エントリーを追加しました', 'success');
         return true;
     },
-    
-    remove: function(index) {
+
+    remove: function (index) {
         this.items.splice(index, 1);
         this.save();
         this.render();
     },
-    
-    clear: function() {
+
+    clear: function () {
         this.items = [];
         this.save();
         this.render();
     },
-    
-    save: function() {
+
+    save: function () {
         sessionStorage.setItem('entryCart', JSON.stringify(this.items));
     },
-    
-    render: function() {
+
+    render: function () {
         const container = document.getElementById('entry-cart-items');
         const badge = document.getElementById('entry-cart-badge');
         const totalEl = document.getElementById('entry-cart-total');
-        
+
         if (!container) return;
-        
+
         if (this.items.length === 0) {
             container.innerHTML = '<p class="text-muted text-center py-3">エントリーはありません</p>';
             if (badge) badge.textContent = '0';
             if (totalEl) totalEl.textContent = '¥0';
             return;
         }
-        
+
         let html = '<ul class="list-group list-group-flush">';
         let total = 0;
-        
+
         this.items.forEach((item, index) => {
             html += `
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -152,17 +152,17 @@ const EntryCart = {
             `;
             total += 3000; // Entry fee per race
         });
-        
+
         html += '</ul>';
         container.innerHTML = html;
-        
+
         if (badge) badge.textContent = this.items.length;
         if (totalEl) totalEl.textContent = `¥${total.toLocaleString()}`;
     },
-    
-    showToast: function(message, type) {
+
+    showToast: function (message, type) {
         const toastContainer = document.getElementById('toast-container') || this.createToastContainer();
-        
+
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'danger'}`;
         toast.setAttribute('role', 'alert');
@@ -172,17 +172,17 @@ const EntryCart = {
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         `;
-        
+
         toastContainer.appendChild(toast);
         const bsToast = new bootstrap.Toast(toast);
         bsToast.show();
-        
-        toast.addEventListener('hidden.bs.toast', function() {
+
+        toast.addEventListener('hidden.bs.toast', function () {
             toast.remove();
         });
     },
-    
-    createToastContainer: function() {
+
+    createToastContainer: function () {
         const container = document.createElement('div');
         container.id = 'toast-container';
         container.className = 'toast-container position-fixed top-0 end-0 p-3';
@@ -193,7 +193,7 @@ const EntryCart = {
 
 // Check-in functionality
 const CheckIn = {
-    updateStatus: function(assignmentId, status, csrfToken) {
+    updateStatus: function (assignmentId, status, csrfToken) {
         fetch(`/heats/checkin/${assignmentId}/`, {
             method: 'POST',
             headers: {
@@ -202,29 +202,29 @@ const CheckIn = {
             },
             body: JSON.stringify({ status: status })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                this.updateUI(assignmentId, status);
-                EntryCart.showToast('受付状態を更新しました', 'success');
-            } else {
-                EntryCart.showToast('エラーが発生しました', 'danger');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            EntryCart.showToast('通信エラーが発生しました', 'danger');
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.updateUI(assignmentId, status);
+                    EntryCart.showToast('受付状態を更新しました', 'success');
+                } else {
+                    EntryCart.showToast('エラーが発生しました', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                EntryCart.showToast('通信エラーが発生しました', 'danger');
+            });
     },
-    
-    updateUI: function(assignmentId, status) {
+
+    updateUI: function (assignmentId, status) {
         const row = document.querySelector(`tr[data-assignment-id="${assignmentId}"]`);
         if (!row) return;
-        
+
         const indicator = row.querySelector('.checkin-status');
         indicator.className = 'checkin-status';
-        
-        switch(status) {
+
+        switch (status) {
             case 'checked_in':
                 indicator.classList.add('checkin-done');
                 indicator.innerHTML = '<i class="bi bi-check"></i>';
@@ -242,12 +242,12 @@ const CheckIn = {
 
 // Form validation helpers
 const FormValidation = {
-    validateEmail: function(email) {
+    validateEmail: function (email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     },
-    
-    validateJaraNumber: function(number) {
+
+    validateJaraNumber: function (number) {
         // JARA registration number format
         const re = /^[A-Z]{2}\d{6}$/;
         return re.test(number);
@@ -258,10 +258,10 @@ const FormValidation = {
 function previewPaymentProof(input) {
     const preview = document.getElementById('payment-proof-preview');
     if (!preview) return;
-    
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             preview.src = e.target.result;
             preview.style.display = 'block';
         };
@@ -273,32 +273,32 @@ function previewPaymentProof(input) {
 function initCountdown(targetDate, elementId) {
     const element = document.getElementById(elementId);
     if (!element) return;
-    
+
     const target = new Date(targetDate).getTime();
-    
-    const update = function() {
+
+    const update = function () {
         const now = new Date().getTime();
         const distance = target - now;
-        
+
         if (distance < 0) {
             element.innerHTML = '締切済み';
             return;
         }
-        
+
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        
+
         element.innerHTML = `${days}日 ${hours}時間 ${minutes}分`;
     };
-    
+
     update();
     setInterval(update, 60000); // Update every minute
 }
 
 // Loading overlay
 const LoadingOverlay = {
-    show: function() {
+    show: function () {
         let overlay = document.getElementById('loading-overlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -316,8 +316,8 @@ const LoadingOverlay = {
         }
         overlay.style.display = 'flex';
     },
-    
-    hide: function() {
+
+    hide: function () {
         const overlay = document.getElementById('loading-overlay');
         if (overlay) {
             overlay.style.display = 'none';
@@ -336,7 +336,7 @@ function confirmAction(message, callback) {
 function printElement(elementId) {
     const element = document.getElementById(elementId);
     if (!element) return;
-    
+
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
         <html>
@@ -356,3 +356,130 @@ function printElement(elementId) {
     `);
     printWindow.document.close();
 }
+
+// Copy table data to clipboard (for Excel paste)
+const TableCopy = {
+    /**
+     * Copy table data to clipboard in tab-separated format
+     * @param {string} tableSelector - CSS selector for the table
+     * @param {Object} options - Options for copying
+     * @param {number[]} options.excludeColumns - Column indices to exclude (0-based)
+     * @param {boolean} options.includeHeader - Whether to include header row
+     */
+    copy: function (tableSelector, options = {}) {
+        const table = document.querySelector(tableSelector);
+        if (!table) {
+            this.showToast('テーブルが見つかりません', 'danger');
+            return;
+        }
+
+        const excludeCols = options.excludeColumns || [];
+        const includeHeader = options.includeHeader !== false;
+
+        const rows = [];
+
+        // Header row
+        if (includeHeader) {
+            const headerRow = table.querySelector('thead tr');
+            if (headerRow) {
+                const headerCells = [];
+                headerRow.querySelectorAll('th').forEach((th, idx) => {
+                    if (!excludeCols.includes(idx)) {
+                        headerCells.push(th.textContent.trim());
+                    }
+                });
+                rows.push(headerCells.join('\t'));
+            }
+        }
+
+        // Body rows
+        const bodyRows = table.querySelectorAll('tbody tr');
+        bodyRows.forEach(tr => {
+            const cells = [];
+            tr.querySelectorAll('td').forEach((td, idx) => {
+                if (!excludeCols.includes(idx)) {
+                    // Clean up the text content
+                    let text = td.textContent.trim();
+                    // Remove excess whitespace
+                    text = text.replace(/\s+/g, ' ');
+                    cells.push(text);
+                }
+            });
+            if (cells.length > 0) {
+                rows.push(cells.join('\t'));
+            }
+        });
+
+        if (rows.length === 0) {
+            this.showToast('コピーするデータがありません', 'warning');
+            return;
+        }
+
+        const text = rows.join('\n');
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                this.showToast('クリップボードにコピーしました', 'success');
+            })
+            .catch(err => {
+                console.error('Failed to copy:', err);
+                this.showToast('コピーに失敗しました', 'danger');
+            });
+    },
+
+    /**
+     * Copy entry cart data to clipboard
+     */
+    copyEntries: function () {
+        this.copy('#entry-table', {
+            excludeColumns: [4], // Exclude action column
+            includeHeader: true
+        });
+    },
+
+    /**
+     * Copy athlete list to clipboard
+     */
+    copyAthletes: function () {
+        this.copy('#athlete-table', {
+            excludeColumns: [], // Include all columns
+            includeHeader: true
+        });
+    },
+
+    showToast: function (message, type) {
+        // Reuse EntryCart's toast functionality if available
+        if (typeof EntryCart !== 'undefined' && EntryCart.showToast) {
+            EntryCart.showToast(message, type);
+        } else {
+            // Fallback: create toast container and show
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-success' : (type === 'warning' ? 'bg-warning' : 'bg-danger');
+            toast.className = `toast align-items-center text-white ${bgClass}`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
+    }
+};

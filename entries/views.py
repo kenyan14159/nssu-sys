@@ -80,6 +80,12 @@ def entry_cart(request, competition_pk):
             'race__id', 'race__name', 'race__distance',
             'race__competition__id', 'race__competition__entry_fee'
         )
+        # 下書きのEntryGroupがあるかチェック
+        draft_group = EntryGroup.objects.filter(
+            organization=user.organization,
+            competition=competition,
+            is_draft=True
+        ).first()
     else:
         entries = Entry.objects.filter(
             race__competition=competition,
@@ -95,6 +101,13 @@ def entry_cart(request, competition_pk):
             'race__id', 'race__name', 'race__distance',
             'race__competition__id', 'race__competition__entry_fee'
         )
+        # 下書きのEntryGroupがあるかチェック
+        draft_group = EntryGroup.objects.filter(
+            registered_by=user,
+            organization__isnull=True,
+            competition=competition,
+            is_draft=True
+        ).first()
     
     # 合計金額（entry_fee が None の場合は 2000 をデフォルト）
     entry_fee = competition.entry_fee if competition.entry_fee else 2000
@@ -104,7 +117,67 @@ def entry_cart(request, competition_pk):
         'competition': competition,
         'entries': entries,
         'total_amount': total_amount,
+        'draft_group': draft_group,
     })
+
+
+@login_required
+@transaction.atomic
+def entry_save_draft(request, competition_pk):
+    """エントリー一時保存"""
+    if request.method != 'POST':
+        return redirect('entries:cart', competition_pk=competition_pk)
+    
+    competition = get_object_or_404(Competition, pk=competition_pk)
+    user = request.user
+    
+    # 未確定のエントリーを取得
+    if user.organization:
+        entries = Entry.objects.filter(
+            race__competition=competition,
+            athlete__organization=user.organization,
+            status='pending'
+        )
+    else:
+        entries = Entry.objects.filter(
+            race__competition=competition,
+            athlete__user=user,
+            status='pending'
+        )
+    
+    if not entries.exists():
+        messages.error(request, '保存するエントリーがありません。')
+        return redirect('entries:cart', competition_pk=competition_pk)
+    
+    # 既存の下書きがあれば更新、なければ新規作成
+    if user.organization:
+        draft_group, created = EntryGroup.objects.get_or_create(
+            organization=user.organization,
+            competition=competition,
+            is_draft=True,
+            defaults={
+                'registered_by': user,
+                'total_amount': entries.count() * (competition.entry_fee or 2000)
+            }
+        )
+    else:
+        draft_group, created = EntryGroup.objects.get_or_create(
+            registered_by=user,
+            organization=None,
+            competition=competition,
+            is_draft=True,
+            defaults={
+                'total_amount': entries.count() * (competition.entry_fee or 2000)
+            }
+        )
+    
+    # エントリーを紐付け
+    draft_group.entries.set(entries)
+    draft_group.total_amount = entries.count() * (competition.entry_fee or 2000)
+    draft_group.save()
+    
+    messages.success(request, f'{entries.count()}件のエントリーを一時保存しました。後から続きを入力できます。')
+    return redirect('competitions:dashboard')
 
 
 @login_required
@@ -291,3 +364,46 @@ def excel_upload(request, competition_pk):
         'form': form,
     })
 
+
+@login_required
+def entry_confirmation_pdf(request, competition_pk):
+    """エントリー申込確認書PDF（参加者向け）"""
+    from reports.generators import EntryConfirmationPDFGenerator
+    
+    competition = get_object_or_404(Competition, pk=competition_pk)
+    user = request.user
+    
+    # ユーザーのエントリーを取得
+    if user.organization:
+        entries = Entry.objects.filter(
+            race__competition=competition,
+            athlete__organization=user.organization,
+        ).select_related(
+            'athlete', 'race'
+        ).order_by('race__display_order', 'declared_time')
+    else:
+        entries = Entry.objects.filter(
+            race__competition=competition,
+            athlete__user=user,
+        ).select_related(
+            'athlete', 'race'
+        ).order_by('race__display_order', 'declared_time')
+    
+    if not entries.exists():
+        messages.error(request, 'エントリーがありません。')
+        return redirect('entries:cart', competition_pk=competition_pk)
+    
+    # PDF生成
+    pdf_buffer = EntryConfirmationPDFGenerator.generate_confirmation_pdf(
+        competition=competition,
+        entries=entries,
+        organization=user.organization,
+        user=user
+    )
+    
+    # レスポンス
+    response = HttpResponse(pdf_buffer.read(), content_type='application/pdf')
+    filename = f'entry_confirmation_{competition.pk}.pdf'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    return response

@@ -338,3 +338,17 @@ def athlete_bulk_register(request):
     except Exception as e:
         messages.error(request, f'登録中にエラーが発生しました: {str(e)}')
         return redirect('accounts:athlete_bulk_upload')
+
+
+@login_required
+def athlete_csv_template(request):
+    """選手登録用CSVテンプレートダウンロード（JAAF形式）"""
+    from .athlete_import import generate_jaaf_csv_template
+    
+    content = generate_jaaf_csv_template()
+    response = HttpResponse(
+        content,
+        content_type='text/csv; charset=utf-8-sig'
+    )
+    response['Content-Disposition'] = 'attachment; filename="athlete_template_jaaf.csv"'
+    return response

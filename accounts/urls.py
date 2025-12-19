@@ -21,6 +21,7 @@ urlpatterns = [
     
     # 選手一括登録
     path('athletes/bulk/template/', views.athlete_bulk_template, name='athlete_bulk_template'),
+    path('athletes/bulk/template/csv/', views.athlete_csv_template, name='athlete_csv_template'),
     path('athletes/bulk/upload/', views.athlete_bulk_upload, name='athlete_bulk_upload'),
     path('athletes/bulk/register/', views.athlete_bulk_register, name='athlete_bulk_register'),
     
